@@ -1,0 +1,8 @@
+*.iml
+out/*
+bin/*
+.idea/*
+.vs/*
+debug/*
+release/*
+obj/*
