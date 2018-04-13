@@ -6,3 +6,7 @@ bin/*
 debug/*
 release/*
 obj/*
+Debug/*
+Release/*
+Bin/*
+Obj/*
