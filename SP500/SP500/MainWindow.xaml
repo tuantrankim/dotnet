@@ -5,27 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SP500"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="664.415" Loaded="Window_Loaded">
+        Title="MainWindow" Height="601" Width="1156.725" Loaded="Window_Loaded">
     <Grid>
-        <DataGrid x:Name="dataGrid" Margin="10,93,5,5"/>
+        <DataGrid x:Name="dataGrid" Margin="232,93,5,5"/>
         <TextBlock x:Name="lbUp" HorizontalAlignment="Left" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Up" Width="46"/>
         <TextBlock x:Name="lbDown" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Down" Width="46"/>
-        <TextBlock x:Name="lbProcessingDate" HorizontalAlignment="Left" Margin="167,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
-        <TextBlock x:Name="lbBalance" HorizontalAlignment="Left" Margin="167,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Balance ($)" Width="82"/>
+        <TextBlock x:Name="lbProcessingDate" HorizontalAlignment="Left" Margin="14,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
+        <TextBlock x:Name="lbCashAmount" HorizontalAlignment="Left" Margin="12,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Cash Amount ($)" Width="94"/>
         <TextBox x:Name="Up" HorizontalAlignment="Left" Height="23" Margin="10,26,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
         <TextBox x:Name="Down" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
-        <TextBox x:Name="ProcessingDate" HorizontalAlignment="Left" Height="23" Margin="268,9,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
-        <TextBox x:Name="Balance" HorizontalAlignment="Left" Height="23" Margin="268,50,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBox x:Name="ProcessingDate" HorizontalAlignment="Left" Height="23" Margin="14,153,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
+        <TextBox x:Name="CashAmount" HorizontalAlignment="Left" Height="23" Margin="125,343,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
         <Button x:Name="btnAutoRun" Content="AutoRun" HorizontalAlignment="Left" Margin="559,58,0,0" VerticalAlignment="Top" Width="75" Click="btnAutoRun_Click"/>
         <Button x:Name="btnNext" Content="Next" HorizontalAlignment="Left" Margin="559,15,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
-        <TextBlock x:Name="lbValue" HorizontalAlignment="Left" Margin="402,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Value" Width="46"/>
-        <TextBox x:Name="Value" HorizontalAlignment="Left" Height="23" Margin="453,11,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="78" RenderTransformOrigin="8.642,0.463"/>
-        <TextBlock x:Name="lbTrade" HorizontalAlignment="Left" Margin="402,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Buy (-) / Sell (+)" Width="46"/>
-        <TextBox x:Name="Trade" HorizontalAlignment="Left" Height="23" Margin="453,45,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="78" RenderTransformOrigin="8.642,0.463"/>
-        <TextBlock x:Name="lbTop" HorizontalAlignment="Left" Margin="76,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Top" Width="46"/>
-        <TextBlock x:Name="lbBottom" HorizontalAlignment="Left" Margin="72,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Bottom" Width="46"/>
-        <TextBox x:Name="Top" HorizontalAlignment="Left" Height="23" Margin="72,26,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="78" SelectionOpacity="0"/>
-        <TextBox x:Name="Bottom" HorizontalAlignment="Left" Height="23" Margin="72,58,0,0" TextWrapping="Wrap" Text="999999999" VerticalAlignment="Top" Width="78"/>
+        <TextBlock x:Name="lbValue" HorizontalAlignment="Left" Margin="14,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Value" Width="46"/>
+        <TextBox x:Name="Value" HorizontalAlignment="Left" Height="23" Margin="65,181,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="78" RenderTransformOrigin="8.642,0.463"/>
+        <TextBlock x:Name="lbTrade" HorizontalAlignment="Left" Margin="14,229,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Buy (-) / Sell (+)" Width="46"/>
+        <TextBox x:Name="Trade" HorizontalAlignment="Left" Height="23" Margin="65,228,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="78" RenderTransformOrigin="8.642,0.463"/>
+        <TextBlock x:Name="lbTop" HorizontalAlignment="Left" Margin="180,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Top" Width="46"/>
+        <TextBlock x:Name="lbBottom" HorizontalAlignment="Left" Margin="176,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Bottom" Width="46"/>
+        <TextBox x:Name="Top" HorizontalAlignment="Left" Height="23" Margin="176,26,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="78" SelectionOpacity="0"/>
+        <TextBox x:Name="Bottom" HorizontalAlignment="Left" Height="23" Margin="176,58,0,0" TextWrapping="Wrap" Text="999999999" VerticalAlignment="Top" Width="78"/>
+        <Button x:Name="btnReset" Content="Reset Input" HorizontalAlignment="Left" Margin="26,105,0,0" VerticalAlignment="Top" Width="75" Click="btnReset_Click"/>
+        <TextBlock x:Name="lbShares" HorizontalAlignment="Left" Margin="14,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Shares Amount" Width="82" Height="23"/>
+        <TextBox x:Name="SharesAmount" HorizontalAlignment="Left" Height="23" Margin="115,422,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbBalance" HorizontalAlignment="Left" Margin="14,282,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Balance ($)" Width="82" Height="23"/>
+        <TextBox x:Name="Balance" HorizontalAlignment="Left" Height="23" Margin="115,282,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbBalance_Copy" HorizontalAlignment="Left" Margin="14,305,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Shares Balance" Width="82" Height="33"/>
+        <TextBox x:Name="SharesBalance" HorizontalAlignment="Left" Height="23" Margin="115,305,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
+        <TextBox x:Name="CashAmountMin" HorizontalAlignment="Left" Height="23" Margin="16,382,0,0" TextWrapping="Wrap" Text="999999999" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="CashAmountMax" HorizontalAlignment="Left" Height="23" Margin="145,382,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="87"/>
+        <TextBlock x:Name="lbCashAmountMin" HorizontalAlignment="Left" Margin="5,366,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Min" Width="94"/>
+        <TextBlock x:Name="lbCashAmountMax" HorizontalAlignment="Left" Margin="125,366,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Max" Width="94"/>
+        <TextBox x:Name="SharesAmountMin" HorizontalAlignment="Left" Height="23" Margin="19,466,0,0" TextWrapping="Wrap" Text="999999999" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="SharesAmountMax" HorizontalAlignment="Left" Height="23" Margin="148,466,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="87"/>
+        <TextBlock x:Name="lbSharesAmountMin" HorizontalAlignment="Left" Margin="8,450,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Min" Width="94"/>
+        <TextBlock x:Name="lbShareAmountMax" HorizontalAlignment="Left" Margin="128,450,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Max" Width="94"/>
+        <TextBlock x:Name="lbSellAmount" HorizontalAlignment="Left" Margin="65,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Sell Qty" Width="46"/>
+        <TextBlock x:Name="lbBuyQty" HorizontalAlignment="Left" Margin="65,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Buy Qty" Width="46"/>
+        <TextBox x:Name="SellQty" HorizontalAlignment="Left" Height="23" Margin="65,26,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="BuyQty" HorizontalAlignment="Left" Height="23" Margin="65,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBlock x:Name="lbCashAmountPreset" HorizontalAlignment="Left" Margin="274,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Preset Cash ($)" Width="94"/>
+        <TextBox x:Name="CashAmountPreset" HorizontalAlignment="Left" Height="23" Margin="274,23,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbSharesPreset" HorizontalAlignment="Left" Margin="274,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Preset Shares Qty" Width="82" Height="23"/>
+        <TextBox x:Name="SharesAmountPreset" HorizontalAlignment="Left" Height="23" Margin="274,58,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbFromDate" HorizontalAlignment="Left" Margin="395,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
+        <TextBox x:Name="FromDate" HorizontalAlignment="Left" Height="23" Margin="395,23,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbTodate" HorizontalAlignment="Left" Margin="395,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
+        <TextBox x:Name="ToDate" HorizontalAlignment="Left" Height="23" Margin="395,64,0,0" TextWrapping="Wrap" Text="01/01/2030" VerticalAlignment="Top" Width="107"/>
+        <Button x:Name="btnCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="657,59,0,0" VerticalAlignment="Top" Width="75" Click="btnCalibrate_Click"/>
+        <TextBlock x:Name="lbUp_Copy" HorizontalAlignment="Left" Margin="751,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Up" Width="46"/>
+        <TextBlock x:Name="lbDown_Copy" HorizontalAlignment="Left" Margin="751,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Down" Width="46"/>
+        <TextBox x:Name="calUp" HorizontalAlignment="Left" Height="23" Margin="751,20,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="calDown" HorizontalAlignment="Left" Height="23" Margin="751,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBlock x:Name="lbSellAmount_Copy" HorizontalAlignment="Left" Margin="806,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Sell Qty" Width="46"/>
+        <TextBlock x:Name="lbBuyQty_Copy" HorizontalAlignment="Left" Margin="806,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Buy Qty" Width="46"/>
+        <TextBox x:Name="calSellQty" HorizontalAlignment="Left" Height="23" Margin="806,20,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="calBuyQty" HorizontalAlignment="Left" Height="23" Margin="806,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBlock x:Name="lbBalance_Copy1" HorizontalAlignment="Left" Margin="870,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Balance ($)" Width="82" Height="23"/>
+        <TextBox x:Name="calBalance" HorizontalAlignment="Left" Height="23" Margin="870,20,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbBalance_Copy2" HorizontalAlignment="Left" Margin="870,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Shares Balance" Width="82" Height="33"/>
+        <TextBox x:Name="calSharesBalance" HorizontalAlignment="Left" Height="23" Margin="870,59,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
 
     </Grid>
 </Window>

@@ -1,0 +1,14 @@
+C:\Tuan\github\dotnet\SP500\SP500\bin\Debug\SP500.exe.config
+C:\Tuan\github\dotnet\SP500\SP500\bin\Debug\SP500.exe
+C:\Tuan\github\dotnet\SP500\SP500\bin\Debug\SP500.pdb
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.csprojResolveAssemblyReference.cache
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\MainWindow.g.cs
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\App.g.cs
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500_MarkupCompile.cache
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500_MarkupCompile.lref
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\MainWindow.baml
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.g.resources
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.Properties.Resources.resources
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.csproj.GenerateResource.Cache
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.exe
+C:\Tuan\github\dotnet\SP500\SP500\obj\Debug\SP500.pdb
