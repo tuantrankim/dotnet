@@ -16,8 +16,8 @@
         <TextBox x:Name="Down" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
         <TextBox x:Name="ProcessingDate" HorizontalAlignment="Left" Height="23" Margin="14,153,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
         <TextBox x:Name="CashAmount" HorizontalAlignment="Left" Height="23" Margin="125,343,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
-        <Button x:Name="btnAutoRun" Content="AutoRun" HorizontalAlignment="Left" Margin="559,58,0,0" VerticalAlignment="Top" Width="75" Click="btnAutoRun_Click"/>
-        <Button x:Name="btnNext" Content="Next" HorizontalAlignment="Left" Margin="559,15,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
+        <Button x:Name="btnAutoRun" Content="AutoRun" HorizontalAlignment="Left" Margin="520,63,0,0" VerticalAlignment="Top" Width="75" Click="btnAutoRun_Click"/>
+        <Button x:Name="btnNext" Content="Next" HorizontalAlignment="Left" Margin="520,25,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
         <TextBlock x:Name="lbValue" HorizontalAlignment="Left" Margin="14,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Value" Width="46"/>
         <TextBox x:Name="Value" HorizontalAlignment="Left" Height="23" Margin="65,181,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="78" RenderTransformOrigin="8.642,0.463"/>
         <TextBlock x:Name="lbTrade" HorizontalAlignment="Left" Margin="14,229,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Buy (-) / Sell (+)" Width="46"/>
@@ -53,7 +53,7 @@
         <TextBox x:Name="FromDate" HorizontalAlignment="Left" Height="23" Margin="395,23,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
         <TextBlock x:Name="lbTodate" HorizontalAlignment="Left" Margin="395,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
         <TextBox x:Name="ToDate" HorizontalAlignment="Left" Height="23" Margin="395,64,0,0" TextWrapping="Wrap" Text="01/01/2030" VerticalAlignment="Top" Width="107"/>
-        <Button x:Name="btnCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="657,59,0,0" VerticalAlignment="Top" Width="75" Click="btnCalibrate_Click"/>
+        <Button x:Name="btnCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="634,64,0,0" VerticalAlignment="Top" Width="75" Click="btnCalibrate_Click"/>
         <TextBlock x:Name="lbUp_Copy" HorizontalAlignment="Left" Margin="751,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Up" Width="46"/>
         <TextBlock x:Name="lbDown_Copy" HorizontalAlignment="Left" Margin="751,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Down" Width="46"/>
         <TextBox x:Name="calUp" HorizontalAlignment="Left" Height="23" Margin="751,20,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
@@ -66,6 +66,7 @@
         <TextBox x:Name="calBalance" HorizontalAlignment="Left" Height="23" Margin="870,20,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
         <TextBlock x:Name="lbBalance_Copy2" HorizontalAlignment="Left" Margin="870,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Shares Balance" Width="82" Height="33"/>
         <TextBox x:Name="calSharesBalance" HorizontalAlignment="Left" Height="23" Margin="870,59,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
+        <CheckBox x:Name="UIRefresh" Content="UI Auto Refresh" HorizontalAlignment="Left" Margin="634,23,0,0" VerticalAlignment="Top" IsChecked="True" Width="149"/>
 
     </Grid>
 </Window>

@@ -24,8 +24,10 @@ namespace SP500
     {
         private readonly SynchronizationContext synchronizationContext;
         CancellationTokenSource cts;
+        bool isCalibrating = false;
         private DateTime previousTime = DateTime.Now;
         DateTime processingDate, fromDate, toDate;
+
         bool isBuy = false;
 
         double tradePrice;
@@ -127,10 +129,12 @@ namespace SP500
                 if(isBuy) lbTrade.Text = "Buy (-)";
                 else lbTrade.Text = "Sell (+)";
 
-                dataGrid.SelectedIndex = currentIdx;
-                dataGrid.UpdateLayout();
-                dataGrid.ScrollIntoView(dataGrid.SelectedItem);
-
+                if (!isCalibrating)
+                {
+                    dataGrid.SelectedIndex = currentIdx;
+                    dataGrid.UpdateLayout();
+                    dataGrid.ScrollIntoView(dataGrid.SelectedItem);
+                }
                 //Update Calibration
                 //calUp.Text = cUp.ToString();
                 //calDown.Text = cDown.ToString();
@@ -160,9 +164,11 @@ namespace SP500
             try
             {
                 btnAutoRun.IsEnabled = false;
-                if (dataGrid.SelectedIndex < 0) dataGrid.SelectedIndex = 0;
-                currentIdx = dataGrid.SelectedIndex;
-                
+                currentIdx = ++dataGrid.SelectedIndex;
+                if (currentIdx >= values.Length) return;
+                //if (dataGrid.SelectedIndex < 0) dataGrid.SelectedIndex = 0;
+                //currentIdx = dataGrid.SelectedIndex;
+
                 cts = new CancellationTokenSource();
                 int count = await RunningTask(cts);
                 if (currentIdx >= values.Length) currentIdx = values.Length-1;
@@ -257,23 +263,24 @@ namespace SP500
             {
                 btnAutoRun.IsEnabled = false;
                 btnCalibrate.IsEnabled = false;
+                isCalibrating = true;
+
                 cSharesBalance = 0;
                 cBalance = 0;
-
-                for (int up = 1; up < 10; up++)
+                for (sellQty = 1; sellQty < 10; sellQty++)
                 {
-                    for (int down = 1; down < 10; down++)
+                    for (buyQty = 1; buyQty < 10; buyQty++)
                     {
-                        for (int sellQty = 1; sellQty < 10; sellQty++)
+                        for (up = 1; up < 10; up++)
                         {
-                            for (int buyQty = 1; buyQty < 10; buyQty++)
+                            for (down = 1; down < 10; down++)
                             {
 
                                 currentIdx = 0;
                                 currentValue = 0;
                                 cashAmountPreset = cashAmountMin = cashAmountMax = cashAmount = Convert.ToDouble(CashAmountPreset.Text);
                                 sharesAmountPreset = sharesAmountMin = sharesAmountMax = sharesAmount = Convert.ToDouble(SharesAmountPreset.Text);
-                                
+
 
                                 Up.Text = up.ToString();
                                 Down.Text = down.ToString();
@@ -282,7 +289,7 @@ namespace SP500
                                 Balance.Text = balance.ToString();
                                 SharesBalance.Text = sharesBalance.ToString();
 
-                                
+
 
 
 
@@ -293,6 +300,7 @@ namespace SP500
                                 if (sharesBalance > cSharesBalance)
                                 {
                                     cSharesBalance = sharesBalance;
+                                    cBalance = balance;
                                     cUp = up;
                                     cDown = down;
                                     cBuyQty = buyQty;
@@ -305,12 +313,6 @@ namespace SP500
                                     calBalance.Text = cBalance.ToString();
                                     calSharesBalance.Text = cSharesBalance.ToString();
                                 }
-
-                                
-
-                                
-                               
-
                             }
                         }
                     }
@@ -321,16 +323,17 @@ namespace SP500
                 //dataGrid.UpdateLayout();
                 //dataGrid.ScrollIntoView(dataGrid.SelectedItem);
                 //MessageBox.Show("Counter " + count);
-                
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
             finally
-            { 
+            {
                 btnAutoRun.IsEnabled = true;
                 btnCalibrate.IsEnabled = true;
+                isCalibrating = false;
             }
         }
     }
