@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="601" Width="1156.725" Loaded="Window_Loaded">
     <Grid>
-        <DataGrid x:Name="dataGrid" Margin="232,93,5,5"/>
+        <DataGrid x:Name="levelGrid" Margin="254,98,687,309"/>
+        <DataGrid x:Name="dataGrid" Margin="487,98,83,0"/>
         <TextBlock x:Name="lbUp" HorizontalAlignment="Left" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Up" Width="46"/>
         <TextBlock x:Name="lbDown" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Down" Width="46"/>
         <TextBlock x:Name="lbProcessingDate" HorizontalAlignment="Left" Margin="14,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>

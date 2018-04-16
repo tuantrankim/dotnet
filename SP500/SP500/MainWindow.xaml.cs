@@ -36,6 +36,8 @@ namespace SP500
         double buyQty, sellQty, cBuyQty, cSellQty;
         double cashAmountPreset, cashAmount, cashAmountMin, cashAmountMax;
         double sharesAmountPreset, sharesAmount, sharesAmountMin, sharesAmountMax;
+        double top = 0;
+        double bottom = double.PositiveInfinity;
         double balance
         {
             get
@@ -75,6 +77,9 @@ namespace SP500
 
             Index idx = values[currentIdx];
             currentValue = idx.Close;
+
+            if (currentValue > top) top = currentValue;
+            else if (currentValue < bottom) bottom = currentValue;
 
             if (currentValue > tradePrice + up)//sell
             {
@@ -129,6 +134,9 @@ namespace SP500
                 if(isBuy) lbTrade.Text = "Buy (-)";
                 else lbTrade.Text = "Sell (+)";
 
+                Top.Text = top.ToString();
+                Bottom.Text = bottom.ToString();
+
                 if (!isCalibrating)
                 {
                     dataGrid.SelectedIndex = currentIdx;
@@ -149,11 +157,11 @@ namespace SP500
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
             currentIdx = ++dataGrid.SelectedIndex;
-            for(; currentIdx < values.Length; currentIdx++)
-            {
-                if (values[currentIdx].Date < fromDate) continue;
-                if (values[currentIdx].Date >= fromDate) break;
-            }
+            //for(; currentIdx < values.Length; currentIdx++)
+            //{
+            //    if (values[currentIdx].Date < fromDate) continue;
+            //    if (values[currentIdx].Date >= fromDate) break;
+            //}
             
             if (currentIdx >= values.Length) return;
             Calculate();
@@ -248,9 +256,16 @@ namespace SP500
             Balance.Text = balance.ToString();
             SharesBalance.Text = sharesBalance.ToString();
 
+            top = 0;
+            bottom = double.PositiveInfinity;
+
+            Top.Text = top.ToString();
+            Bottom.Text = bottom.ToString();
+
             values = File.ReadAllLines("HistoricalQuotes.csv")
                                            .Skip(2)
                                            .Select(v => Index.FromCsv(v))
+                                           .Where(f => f.Date >= fromDate && f.Date <= toDate)
                                            .OrderBy(i => i.Date)
                                            .ToArray();
             ProcessingDate.Text = DateTime.MinValue.ToShortDateString();
@@ -288,10 +303,6 @@ namespace SP500
                                 SellQty.Text = sellQty.ToString();
                                 Balance.Text = balance.ToString();
                                 SharesBalance.Text = sharesBalance.ToString();
-
-
-
-
 
                                 cts = new CancellationTokenSource();
                                 int count = await RunningTask(cts);
