@@ -7,14 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="601" Width="1156.725" Loaded="Window_Loaded">
     <Grid>
-        <DataGrid x:Name="levelGrid" Margin="254,98,687,309"/>
+        <DataGrid x:Name="tradeHistoryGrid" Margin="254,98,687,10"/>
         <DataGrid x:Name="dataGrid" Margin="487,98,83,0"/>
         <TextBlock x:Name="lbUp" HorizontalAlignment="Left" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Up" Width="46"/>
         <TextBlock x:Name="lbDown" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Down" Width="46"/>
         <TextBlock x:Name="lbProcessingDate" HorizontalAlignment="Left" Margin="14,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ProcessingDate" Width="82"/>
         <TextBlock x:Name="lbCashAmount" HorizontalAlignment="Left" Margin="12,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Cash Amount ($)" Width="94"/>
-        <TextBox x:Name="Up" HorizontalAlignment="Left" Height="23" Margin="10,26,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
-        <TextBox x:Name="Down" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="Up" HorizontalAlignment="Left" Height="23" Margin="10,26,0,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="Down" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="15" VerticalAlignment="Top" Width="39"/>
         <TextBox x:Name="ProcessingDate" HorizontalAlignment="Left" Height="23" Margin="14,153,0,0" TextWrapping="Wrap" Text="01/01/2000" VerticalAlignment="Top" Width="107"/>
         <TextBox x:Name="CashAmount" HorizontalAlignment="Left" Height="23" Margin="125,343,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
         <Button x:Name="btnAutoRun" Content="AutoRun" HorizontalAlignment="Left" Margin="520,63,0,0" VerticalAlignment="Top" Width="75" Click="btnAutoRun_Click"/>
@@ -68,6 +68,10 @@
         <TextBlock x:Name="lbBalance_Copy2" HorizontalAlignment="Left" Margin="870,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Shares Balance" Width="82" Height="33"/>
         <TextBox x:Name="calSharesBalance" HorizontalAlignment="Left" Height="23" Margin="870,59,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="107"/>
         <CheckBox x:Name="UIRefresh" Content="UI Auto Refresh" HorizontalAlignment="Left" Margin="634,23,0,0" VerticalAlignment="Top" IsChecked="True" Width="149"/>
+        <TextBlock x:Name="lbInvestedCash" HorizontalAlignment="Left" Margin="128,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Invested Cash ($)" Width="94"/>
+        <TextBox x:Name="InvestedCash" HorizontalAlignment="Left" Height="23" Margin="128,116,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbInvestedCash_Copy" HorizontalAlignment="Left" Margin="143,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Cash from selling($)" Width="94"/>
+        <TextBox x:Name="CashFromSelling" HorizontalAlignment="Left" Height="23" Margin="143,160,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
 
     </Grid>
 </Window>

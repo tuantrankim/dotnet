@@ -38,6 +38,8 @@ namespace SP500
         double sharesAmountPreset, sharesAmount, sharesAmountMin, sharesAmountMax;
         double top = 0;
         double bottom = double.PositiveInfinity;
+        double investedCash = 0;
+        double cashFromSelling = 0;
         double balance
         {
             get
@@ -57,6 +59,12 @@ namespace SP500
         double currentValue;
 
         Index[] values = {};
+        List<Trade> tradeHistory = new List<Trade>();
+        int currentBuyLevel = 0;
+        int currentSellLevel = 0;
+
+        double[] levelSettings = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597 };
+
         int currentIdx = 0;
         public MainWindow()
         {
@@ -78,28 +86,77 @@ namespace SP500
             Index idx = values[currentIdx];
             currentValue = idx.Close;
 
-            if (currentValue > top) top = currentValue;
-            else if (currentValue < bottom) bottom = currentValue;
+            if (currentValue > top)
+            {
+                top = currentValue;
+                currentBuyLevel = 0;
+            }
+            else if (currentValue < bottom)
+            {
+                bottom = currentValue;
+                currentSellLevel = 0;
+            }
 
             if (currentValue > tradePrice + up)//sell
             {
+                
                 //lbTrade.Text = "Sell (+)";
                 isBuy = false;
-                tradePrice = currentValue;
-                cashAmount = cashAmount + tradePrice * sellQty;
-                sharesAmount-=sellQty;
-                if (sharesAmount < sharesAmountMin) sharesAmountMin = sharesAmount;
-                if (cashAmount > cashAmountMax) cashAmountMax = cashAmount;
+
+                int sellLevel = (int)((currentValue - bottom) / up);
+
+                if (sellLevel > currentSellLevel)
+                {
+                    tradePrice = currentValue;
+                    currentSellLevel = sellLevel;
+                    sellQty = levelSettings[sellLevel];
+                    tradeHistory.Add(
+                        new Trade()
+                        {
+                            Date = idx.Date,
+                            Id = sellLevel,
+                            Level = sellLevel,
+                            Qty = sellQty,
+                            IsBuy = false,
+                            Price = tradePrice,
+                            Total = tradePrice * sellQty
+                        });
+                    cashFromSelling += tradePrice * sellQty;
+
+                    cashAmount = cashAmount + tradePrice * sellQty;
+                    sharesAmount -= sellQty;
+                    if (sharesAmount < sharesAmountMin) sharesAmountMin = sharesAmount;
+                    if (cashAmount > cashAmountMax) cashAmountMax = cashAmount;
+                }
             }
             else if (currentValue < tradePrice - down)//buy
             {
                 //lbTrade.Text = "Buy (-)";
                 isBuy = true;
-                tradePrice = currentValue;
-                cashAmount = cashAmount - tradePrice * buyQty;
-                sharesAmount+=buyQty;
-                if (sharesAmount > sharesAmountMax) sharesAmountMax = sharesAmount;
-                if (cashAmount < cashAmountMin) cashAmountMin = cashAmount;
+                int buyLevel = (int)((top - currentValue) / down);
+
+                if (buyLevel > currentBuyLevel)
+                {
+                    tradePrice = currentValue;
+                    currentBuyLevel = buyLevel;
+                    buyQty = levelSettings[buyLevel];
+                    tradeHistory.Add (
+                        new Trade() 
+                        { 
+                            Date = idx.Date
+                            , Id = buyLevel
+                            , Level = buyLevel
+                            , Qty = buyQty 
+                            , IsBuy = true
+                            , Price = tradePrice
+                            , Total = tradePrice * buyQty
+                        });
+                    investedCash += tradePrice * buyQty;
+                    cashAmount = cashAmount - tradePrice * buyQty;
+                    sharesAmount += buyQty;
+                    if (sharesAmount > sharesAmountMax) sharesAmountMax = sharesAmount;
+                    if (cashAmount < cashAmountMin) cashAmountMin = cashAmount;
+                }
             }
 
         }
@@ -136,9 +193,14 @@ namespace SP500
 
                 Top.Text = top.ToString();
                 Bottom.Text = bottom.ToString();
+                InvestedCash.Text = investedCash.ToString();
+                CashFromSelling.Text = cashFromSelling.ToString();
 
                 if (!isCalibrating)
                 {
+                    //levelGrid.UpdateLayout();
+                    CollectionViewSource.GetDefaultView(tradeHistoryGrid.ItemsSource).Refresh();
+
                     dataGrid.SelectedIndex = currentIdx;
                     dataGrid.UpdateLayout();
                     dataGrid.ScrollIntoView(dataGrid.SelectedItem);
@@ -262,6 +324,14 @@ namespace SP500
             Top.Text = top.ToString();
             Bottom.Text = bottom.ToString();
 
+            currentBuyLevel = 0;
+            currentSellLevel = 0;
+            investedCash = 0;
+            cashFromSelling = 0;
+
+            InvestedCash.Text = investedCash.ToString();
+            CashFromSelling.Text = cashFromSelling.ToString();
+
             values = File.ReadAllLines("HistoricalQuotes.csv")
                                            .Skip(2)
                                            .Select(v => Index.FromCsv(v))
@@ -270,6 +340,9 @@ namespace SP500
                                            .ToArray();
             ProcessingDate.Text = DateTime.MinValue.ToShortDateString();
             dataGrid.ItemsSource = values;
+
+            tradeHistory = new List<Trade>();
+            tradeHistoryGrid.ItemsSource = tradeHistory;
         }
 
         private async void btnCalibrate_Click(object sender, RoutedEventArgs e)
