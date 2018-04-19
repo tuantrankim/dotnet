@@ -167,13 +167,14 @@ namespace SP500
 
             var timeNow = DateTime.Now;
 
-            if ((DateTime.Now - previousTime).Milliseconds <= 5) return;
+            if ((DateTime.Now - previousTime).Milliseconds <= 50) return;
             previousTime = timeNow;
 
             synchronizationContext.Post(new SendOrPostCallback(o =>
             {
-                if (currentIdx >= values.Length) return;
-                Index idx = values[currentIdx];
+                int cIdx = (int) o;
+                if (cIdx >= values.Length) return;
+                Index idx = values[cIdx];
                 ProcessingDate.Text = idx.Date.ToShortDateString();
                 Value.Text = idx.Close.ToString();
                 Trade.Text = tradePrice.ToString();
@@ -198,10 +199,11 @@ namespace SP500
 
                 if (!isCalibrating)
                 {
-                    //levelGrid.UpdateLayout();
-                    CollectionViewSource.GetDefaultView(tradeHistoryGrid.ItemsSource).Refresh();
+                    //List<Trade> itemsSource = tradeHistoryGrid.ItemsSource as List<Trade>;
+                    //if ( itemsSource.Count() < tradeHistory.Count())
+                        tradeHistoryGrid.ItemsSource = tradeHistory.Select(x=>x).ToList();
 
-                    dataGrid.SelectedIndex = currentIdx;
+                    dataGrid.SelectedIndex = cIdx;
                     dataGrid.UpdateLayout();
                     dataGrid.ScrollIntoView(dataGrid.SelectedItem);
                 }
@@ -218,6 +220,7 @@ namespace SP500
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
+            if (dataGrid.SelectedIndex >= values.Length - 1) return;
             currentIdx = ++dataGrid.SelectedIndex;
             //for(; currentIdx < values.Length; currentIdx++)
             //{
@@ -225,7 +228,6 @@ namespace SP500
             //    if (values[currentIdx].Date >= fromDate) break;
             //}
             
-            if (currentIdx >= values.Length) return;
             Calculate();
             UpdateUI();
         }
@@ -233,9 +235,10 @@ namespace SP500
         {
             try
             {
+                if (dataGrid.SelectedIndex >= values.Length - 1) return;
                 btnAutoRun.IsEnabled = false;
                 currentIdx = ++dataGrid.SelectedIndex;
-                if (currentIdx >= values.Length) return;
+                
                 //if (dataGrid.SelectedIndex < 0) dataGrid.SelectedIndex = 0;
                 //currentIdx = dataGrid.SelectedIndex;
 
