@@ -63,8 +63,12 @@ namespace SP500
         int currentBuyLevel = 0;
         int currentSellLevel = 0;
 
-        double[] levelSettings = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597 };
-
+        double[] levelSettings = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597,  };
+        double GetLevelValue(int level)
+        {
+            double result = Math.Round(((Math.Pow(1.6180339, level) - Math.Pow(-0.6180339, level)) / 2.236067977));
+            return result;
+        }
         int currentIdx = 0;
         public MainWindow()
         {
@@ -86,12 +90,15 @@ namespace SP500
             Index idx = values[currentIdx];
             currentValue = idx.Close;
 
+            if (tradePrice == 0) tradePrice = currentValue;//initiate tradePrice
+
             if (currentValue > top)
             {
                 top = currentValue;
                 currentBuyLevel = 0;
             }
-            else if (currentValue < bottom)
+
+            if (currentValue < bottom)
             {
                 bottom = currentValue;
                 currentSellLevel = 0;
@@ -109,22 +116,27 @@ namespace SP500
                 {
                     tradePrice = currentValue;
                     currentSellLevel = sellLevel;
-                    sellQty = levelSettings[sellLevel];
+                    //sellShares = levelSettings[sellLevel];
+                    double sellShares = GetLevelValue(sellLevel) * sellQty;
+
+                    if (sharesAmount < sellShares) sellShares = sharesAmount;//Don't allow negative amount
+                    sharesAmount -= sellShares;
+
                     tradeHistory.Add(
                         new Trade()
                         {
                             Date = idx.Date,
                             Id = sellLevel,
                             Level = sellLevel,
-                            Qty = sellQty,
+                            Qty = sellShares,
                             IsBuy = false,
                             Price = tradePrice,
-                            Total = tradePrice * sellQty
+                            Total = tradePrice * sellShares
                         });
-                    cashFromSelling += tradePrice * sellQty;
+                    cashFromSelling += tradePrice * sellShares;
 
-                    cashAmount = cashAmount + tradePrice * sellQty;
-                    sharesAmount -= sellQty;
+                    cashAmount = cashAmount + tradePrice * sellShares;
+                    
                     if (sharesAmount < sharesAmountMin) sharesAmountMin = sharesAmount;
                     if (cashAmount > cashAmountMax) cashAmountMax = cashAmount;
                 }
@@ -139,21 +151,26 @@ namespace SP500
                 {
                     tradePrice = currentValue;
                     currentBuyLevel = buyLevel;
-                    buyQty = levelSettings[buyLevel];
+                    //buyShares = levelSettings[buyLevel];
+                    double buyShares = GetLevelValue(buyLevel) * buyQty;
+
+                    if (cashAmount < tradePrice * buyShares) buyShares = cashAmount/tradePrice;//Don't allow negative amount
+                    cashAmount = cashAmount - tradePrice * buyShares;
+
                     tradeHistory.Add (
                         new Trade() 
                         { 
                             Date = idx.Date
                             , Id = buyLevel
                             , Level = buyLevel
-                            , Qty = buyQty 
+                            , Qty = buyShares 
                             , IsBuy = true
                             , Price = tradePrice
-                            , Total = tradePrice * buyQty
+                            , Total = tradePrice * buyShares
                         });
-                    investedCash += tradePrice * buyQty;
-                    cashAmount = cashAmount - tradePrice * buyQty;
-                    sharesAmount += buyQty;
+                    investedCash += tradePrice * buyShares;
+                    
+                    sharesAmount += buyShares;
                     if (sharesAmount > sharesAmountMax) sharesAmountMax = sharesAmount;
                     if (cashAmount < cashAmountMin) cashAmountMin = cashAmount;
                 }
@@ -161,6 +178,14 @@ namespace SP500
 
         }
 
+        private void UpdateGrid()
+        {
+            tradeHistoryGrid.ItemsSource = tradeHistory.Select(x => x).ToList();
+
+            dataGrid.SelectedIndex = currentIdx;
+            dataGrid.UpdateLayout();
+            dataGrid.ScrollIntoView(dataGrid.SelectedItem);
+        }
         private void UpdateUI()
         {
             if (currentIdx >= values.Length) return;
@@ -197,16 +222,16 @@ namespace SP500
                 InvestedCash.Text = investedCash.ToString();
                 CashFromSelling.Text = cashFromSelling.ToString();
 
-                if (!isCalibrating)
-                {
-                    //List<Trade> itemsSource = tradeHistoryGrid.ItemsSource as List<Trade>;
-                    //if ( itemsSource.Count() < tradeHistory.Count())
-                        tradeHistoryGrid.ItemsSource = tradeHistory.Select(x=>x).ToList();
+                //if (!isCalibrating)
+                //{
+                //    //List<Trade> itemsSource = tradeHistoryGrid.ItemsSource as List<Trade>;
+                //    //if ( itemsSource.Count() < tradeHistory.Count())
+                //        tradeHistoryGrid.ItemsSource = tradeHistory.Select(x=>x).ToList();
 
-                    dataGrid.SelectedIndex = cIdx;
-                    dataGrid.UpdateLayout();
-                    dataGrid.ScrollIntoView(dataGrid.SelectedItem);
-                }
+                //    dataGrid.SelectedIndex = cIdx;
+                //    dataGrid.UpdateLayout();
+                //    dataGrid.ScrollIntoView(dataGrid.SelectedItem);
+                //}
                 //Update Calibration
                 //calUp.Text = cUp.ToString();
                 //calDown.Text = cDown.ToString();
@@ -230,14 +255,17 @@ namespace SP500
             
             Calculate();
             UpdateUI();
+            UpdateGrid();
         }
         private async void btnAutoRun_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (dataGrid.SelectedIndex >= values.Length - 1) return;
+                if (dataGrid.SelectedIndex >= values.Length) return;
+                if (dataGrid.SelectedIndex < 0) dataGrid.SelectedIndex = 0;
+                currentIdx = dataGrid.SelectedIndex;
                 btnAutoRun.IsEnabled = false;
-                currentIdx = ++dataGrid.SelectedIndex;
+                
                 
                 //if (dataGrid.SelectedIndex < 0) dataGrid.SelectedIndex = 0;
                 //currentIdx = dataGrid.SelectedIndex;
@@ -247,8 +275,7 @@ namespace SP500
                 if (currentIdx >= values.Length) currentIdx = values.Length-1;
                 previousTime = DateTime.MinValue;
                 UpdateUI();
-                dataGrid.UpdateLayout();
-                dataGrid.ScrollIntoView(dataGrid.SelectedItem);
+                UpdateGrid();
                 MessageBox.Show("Counter " + count);
             }
             catch (Exception ex)
@@ -268,7 +295,7 @@ namespace SP500
                 {
                     for (; currentIdx < values.Length; currentIdx++)
                     {
-                        if (values[currentIdx].Date >= fromDate && values[currentIdx].Date <= toDate)
+                        //if (values[currentIdx].Date >= fromDate && values[currentIdx].Date <= toDate)
                         {
                             count++;
                             cts.Token.ThrowIfCancellationRequested();
@@ -296,7 +323,7 @@ namespace SP500
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            tradePrice = Convert.ToDouble(Trade.Text);
+            tradePrice = 0;
             up = Convert.ToDouble(Up.Text);
             down = Convert.ToDouble(Down.Text);
             buyQty = Convert.ToDouble(BuyQty.Text);
@@ -309,7 +336,7 @@ namespace SP500
             fromDate = Convert.ToDateTime(FromDate.Text);
             toDate = Convert.ToDateTime(ToDate.Text);
 
-
+            Trade.Text = tradePrice.ToString();
             CashAmount.Text = cashAmount.ToString();
             CashAmountMin.Text = cashAmountMin.ToString();
             CashAmountMax.Text = cashAmountMax.ToString();
@@ -335,9 +362,16 @@ namespace SP500
             InvestedCash.Text = investedCash.ToString();
             CashFromSelling.Text = cashFromSelling.ToString();
 
-            values = File.ReadAllLines("HistoricalQuotes.csv")
-                                           .Skip(2)
-                                           .Select(v => Index.FromCsv(v))
+            //values = File.ReadAllLines("HistoricalQuotes.csv")
+            //                               .Skip(2)
+            //                               .Select(v => Index.FromHistoricalQuotesCsv(v))
+            //                               .Where(f => f.Date >= fromDate && f.Date <= toDate)
+            //                               .OrderBy(i => i.Date)
+            //                               .ToArray();
+
+            values = File.ReadAllLines("SPY.csv")
+                                           .Skip(1)
+                                           .Select(v => Index.FromSPYCsv(v))
                                            .Where(f => f.Date >= fromDate && f.Date <= toDate)
                                            .OrderBy(i => i.Date)
                                            .ToArray();
@@ -347,7 +381,7 @@ namespace SP500
             tradeHistory = new List<Trade>();
             tradeHistoryGrid.ItemsSource = tradeHistory;
         }
-
+        int[] runningSteps = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10000 };
         private async void btnCalibrate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -358,48 +392,19 @@ namespace SP500
 
                 cSharesBalance = 0;
                 cBalance = 0;
-                for (sellQty = 1; sellQty < 10; sellQty++)
+                foreach (var i in runningSteps)
                 {
-                    for (buyQty = 1; buyQty < 10; buyQty++)
+                    sellQty = i;
+                    foreach (var j in runningSteps)
                     {
-                        for (up = 1; up < 10; up++)
+                        buyQty = j;
+                        foreach (var k in runningSteps)
                         {
-                            for (down = 1; down < 10; down++)
+                            up = k;
+                            foreach (var l in runningSteps)
                             {
-
-                                currentIdx = 0;
-                                currentValue = 0;
-                                cashAmountPreset = cashAmountMin = cashAmountMax = cashAmount = Convert.ToDouble(CashAmountPreset.Text);
-                                sharesAmountPreset = sharesAmountMin = sharesAmountMax = sharesAmount = Convert.ToDouble(SharesAmountPreset.Text);
-
-
-                                Up.Text = up.ToString();
-                                Down.Text = down.ToString();
-                                BuyQty.Text = buyQty.ToString();
-                                SellQty.Text = sellQty.ToString();
-                                Balance.Text = balance.ToString();
-                                SharesBalance.Text = sharesBalance.ToString();
-
-                                cts = new CancellationTokenSource();
-                                int count = await RunningTask(cts);
-
-                                //Calibration update
-                                if (sharesBalance > cSharesBalance)
-                                {
-                                    cSharesBalance = sharesBalance;
-                                    cBalance = balance;
-                                    cUp = up;
-                                    cDown = down;
-                                    cBuyQty = buyQty;
-                                    cSellQty = sellQty;
-
-                                    calUp.Text = cUp.ToString();
-                                    calDown.Text = cDown.ToString();
-                                    calBuyQty.Text = cBuyQty.ToString();
-                                    calSellQty.Text = cSellQty.ToString();
-                                    calBalance.Text = cBalance.ToString();
-                                    calSharesBalance.Text = cSharesBalance.ToString();
-                                }
+                                down = l;
+                                await Calibration();
                             }
                         }
                     }
@@ -421,6 +426,46 @@ namespace SP500
                 btnAutoRun.IsEnabled = true;
                 btnCalibrate.IsEnabled = true;
                 isCalibrating = false;
+            }
+        }
+
+        private async Task Calibration()
+        {
+            currentIdx = 0;
+            currentValue = 0;
+            cashAmountMin = cashAmountMax = cashAmount = cashAmountPreset;
+            sharesAmountMin = sharesAmountMax = sharesAmount = sharesAmountPreset;
+
+            tradePrice = 0;
+            top = 0;
+            bottom = double.PositiveInfinity;
+
+            Up.Text = up.ToString();
+            Down.Text = down.ToString();
+            BuyQty.Text = buyQty.ToString();
+            SellQty.Text = sellQty.ToString();
+            Balance.Text = balance.ToString();
+            SharesBalance.Text = sharesBalance.ToString();
+
+            cts = new CancellationTokenSource();
+            int count = await RunningTask(cts);
+
+            //Calibration update
+            if (sharesBalance > cSharesBalance)
+            {
+                cSharesBalance = sharesBalance;
+                cBalance = balance;
+                cUp = up;
+                cDown = down;
+                cBuyQty = buyQty;
+                cSellQty = sellQty;
+
+                calUp.Text = cUp.ToString();
+                calDown.Text = cDown.ToString();
+                calBuyQty.Text = cBuyQty.ToString();
+                calSellQty.Text = cSellQty.ToString();
+                calBalance.Text = cBalance.ToString();
+                calSharesBalance.Text = cSharesBalance.ToString();
             }
         }
     }
