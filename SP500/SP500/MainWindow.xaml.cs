@@ -40,6 +40,8 @@ namespace SP500
         double bottom = double.PositiveInfinity;
         double investedCash = 0;
         double cashFromSelling = 0;
+        double cashMonthlyAdd = 0;
+        double sharesMonthlyAdd = 0;
         double balance
         {
             get
@@ -66,7 +68,8 @@ namespace SP500
         double[] levelSettings = { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597,  };
         double GetLevelValue(int level)
         {
-            double result = Math.Round(((Math.Pow(1.6180339, level) - Math.Pow(-0.6180339, level)) / 2.236067977));
+            int n = level + 1;
+            double result = Math.Round(((Math.Pow(1.6180339, n) - Math.Pow(-0.6180339, n)) / 2.236067977));
             return result;
         }
         int currentIdx = 0;
@@ -91,6 +94,12 @@ namespace SP500
             currentValue = idx.Close;
 
             if (tradePrice == 0) tradePrice = currentValue;//initiate tradePrice
+
+            if (idx.Date.Day == 1)
+            {
+                cashAmount += cashMonthlyAdd;
+                sharesAmount += sharesMonthlyAdd;
+            }
 
             if (currentValue > top)
             {
@@ -332,6 +341,9 @@ namespace SP500
             cashAmountPreset = cashAmountMin = cashAmountMax = cashAmount = Convert.ToDouble(CashAmountPreset.Text);
             sharesAmountPreset = sharesAmountMin = sharesAmountMax = sharesAmount = Convert.ToDouble(SharesAmountPreset.Text);
             currentValue = Convert.ToDouble(Value.Text);
+            cashMonthlyAdd = Convert.ToDouble(CashMonthlyAdd.Text);
+            sharesMonthlyAdd = Convert.ToDouble(SharesMonthlyAdd.Text);
+
 
             fromDate = Convert.ToDateTime(FromDate.Text);
             toDate = Convert.ToDateTime(ToDate.Text);

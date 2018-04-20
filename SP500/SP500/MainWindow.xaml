@@ -72,6 +72,10 @@
         <TextBox x:Name="InvestedCash" HorizontalAlignment="Left" Height="23" Margin="128,116,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
         <TextBlock x:Name="lbInvestedCash_Copy" HorizontalAlignment="Left" Margin="143,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Cash from selling($)" Width="94"/>
         <TextBox x:Name="CashFromSelling" HorizontalAlignment="Left" Height="23" Margin="143,160,0,0" TextWrapping="Wrap" Text="10000" VerticalAlignment="Top" Width="107"/>
+        <TextBlock x:Name="lbSellAmount_Copy1" HorizontalAlignment="Left" Margin="148,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Monthly $ Add" Width="84"/>
+        <TextBox x:Name="CashMonthlyAdd" HorizontalAlignment="Left" Height="23" Margin="148,202,0,0" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Width="39"/>
+        <TextBlock x:Name="lbSellAmount_Copy2" HorizontalAlignment="Left" Margin="148,226,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Monthly Shares Add" Width="84"/>
+        <TextBox x:Name="SharesMonthlyAdd" HorizontalAlignment="Left" Height="23" Margin="148,245,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="39"/>
 
     </Grid>
 </Window>
