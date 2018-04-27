@@ -394,14 +394,15 @@ namespace SP500
             tradeHistoryGrid.ItemsSource = tradeHistory;
         }
         int[] runningSteps = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10000 };
+        
         private async void btnCalibrate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 btnAutoRun.IsEnabled = false;
-                btnCalibrate.IsEnabled = false;
-                isCalibrating = true;
-
+                //btnCalibrate.IsEnabled = false;
+                if (isCalibrating == false) isCalibrating = true;
+                else isCalibrating = false;
                 cSharesBalance = 0;
                 cBalance = 0;
                 foreach (var i in runningSteps)
@@ -415,6 +416,7 @@ namespace SP500
                             up = k;
                             foreach (var l in runningSteps)
                             {
+                                if (isCalibrating == false) return;
                                 down = l;
                                 await Calibration();
                             }
