@@ -1,6 +1,6 @@
 https://app.pluralsight.com/library/courses/aspnetcore-mvc-efcore-bootstrap-angular-web/table-of-contents
 
-'''
+```
 Install Microsoft .Net Core sdk
 >dotnet --version
 >dotnet new --help
@@ -31,4 +31,4 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
   app.UseStaticFiles();//use static file under folder wwwroot
 }
 
-'''
+```
