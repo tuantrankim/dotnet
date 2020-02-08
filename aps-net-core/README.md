@@ -29,6 +29,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
   // Add middle ware - order is important
   app.UseDefaultFiles();//E.g index.html is a default file
   app.UseStaticFiles();//use static file under folder wwwroot
+  app.UseNodeModules();//mapping node module to wwwroot
 }
 
 ```
