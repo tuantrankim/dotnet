@@ -34,9 +34,25 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
 
 
 //Startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddControllersWithViews();
+}
+
 public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
 {
   // Add middle ware - order is important
+  /*
+#if DEBUG
+  app.UseDevelopterExceptionPage();
+#endif
+  //similar to use env.IsDevelopment()
+*/
+  if(env.IsDevelopment())
+  {
+    app.UseDeveloperExceptionPage();
+  }
+
   app.UseStaticFiles();//use static file under folder wwwroot
   app.UseNodeModules();//mapping node module to wwwroot
   app.UseRouting();
@@ -45,5 +61,13 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
       "{controller}/{action}/{id?}",
       new { controller = "App", action = "Index"});
   });
+}
+
+
+//AppController.cs
+public IActionResult Index()
+{
+  //throw new InvalidOperationException();
+  return View();
 }
 ```
