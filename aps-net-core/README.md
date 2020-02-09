@@ -76,3 +76,19 @@ public IActionResult Index()
   return View();
 }
 ```
+
+##Layout page
+
+```
+//Views/Shared/_Layout.cshtml
+<section>
+  <h2>@ViewBag.Title</h2>
+  @RenderBody()
+</section>
+
+//Views/_ViewStart.cshtml
+// execute in every view when it renders
+@{
+  Layout = "_Layout"; //Setting the layout to be _Layout.cshtml file
+}
+```
