@@ -242,3 +242,62 @@ public class ContactViewModel
 }
 
 ```
+
+##Validation
+//ContactViewModel.cs
+```
+public class ContactViewModel
+{
+  [Required]
+  [MinLength(5)]
+  public string Name { get; set; }
+  [Required]
+  [EmailAddress]
+  public string Email { get; set; }
+  [Required]
+  public string Subject { get; set; }
+  [Required]
+  [MaxLength(250), ErrorMessage = "Too Long"]
+  public string Message { get; set; }
+}
+```
+
+##ModelState
+using ModelState to check form valid or not
+ModelState.ErrorCount shows number of errors
+Add to view
+```
+  <div asp-validation-summary="All"></div>
+  OR to show entire view model problems
+  <div asp-validation-summary="ModelOnly"></div>
+  
+  <span asp-validation-for="Name"></span>
+```
+```
+[HttpPost("contact")]
+public IActionResult Contact(ContactViewModel model)
+{
+  if (ModelState.IsValid)
+  {
+    // Send the email
+    
+    
+  }
+  else
+  {
+    // Show the errors
+  }
+  
+  return View();
+}
+```
+
+##Validation on client side using jquery-validation
+```
+Similar to adding
+  "bootstrap": "^4.1.1",
+  "jquery": "^3.1.1",
+Add to package.json dependencies
+  "jquery-validation": "^1.17.0",
+  "jquery-validation-unobtrusive": "^3.2.10"
+```
