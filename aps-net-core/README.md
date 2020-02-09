@@ -152,7 +152,8 @@ Create pages: Pages\Error.cshtml
 ##MVC http post
 //Contact.cshtml
 View: Use form method = "post"
-Controller: Add [HttpPost]
+Add names to all input taga that need on server side 
+Controller: Add [HttpPost("contact"]
 ```
 <h2>@ViewBag.Ttile</h2>
 <form method="post">
@@ -177,4 +178,11 @@ Controller: Add [HttpPost]
   <input type="submit" value="Send Message" />
 </form>
 
+
+//AppController.cs
+[HttpPost("contact")]
+public IActionResult Contact(object model)
+{
+  return View();
+}
 ```
