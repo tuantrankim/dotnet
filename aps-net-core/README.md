@@ -96,6 +96,8 @@ public IActionResult Index()
 ##Controller
 
 ```
+//exceptional routing
+[HttpGet("contact")]
 public IActionResult Contact()
 {
   ViewBag.Title = "Contact Us";
