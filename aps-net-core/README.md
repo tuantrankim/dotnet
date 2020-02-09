@@ -202,22 +202,22 @@ similarly, instead of using name, using asp-for to comunicate with action post p
 
 <h2>@ViewBag.Ttile</h2>
 <form method="post">
-  <label>Your Name:</label>
+  <label asp-for="Name">Your Name:</label>
   <br/>
-  <input name="name"/>
-  <br/>
-  
-  <label>Email:</label>
-  <br/>
-  <input name="email" type="email"/>
+  <input asp-for="Name"/>
   <br/>
   
-  <label>Subject:/label>
+  <label asp-for="Email">Email:</label>
   <br/>
-  <input name="subject" type="text"/>
+  <input asp-for="Email" type="email"/>
   <br/>
   
-  <textarea name="message" rows="4"></textarea>
+  <label asp-for="Subject">Subject:/label>
+  <br/>
+  <input asp-for="Subject" type="text"/>
+  <br/>
+  
+  <textarea asp-for="Message"" rows="4"></textarea>
   <br />
   
   <input type="submit" value="Send Message" />
