@@ -47,10 +47,15 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
   app.UseDevelopterExceptionPage();
 #endif
   //similar to use env.IsDevelopment()
+  //or env.IsEnvironment("Development")
 */
   if(env.IsDevelopment())
   {
     app.UseDeveloperExceptionPage();
+  }
+  else
+  {
+    // Add Error Page
   }
 
   app.UseStaticFiles();//use static file under folder wwwroot
