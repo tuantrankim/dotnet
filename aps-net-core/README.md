@@ -56,6 +56,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
   else
   {
     // Add Error Page
+    app.UseExceptionHandler("/error");
   }
 
   app.UseStaticFiles();//use static file under folder wwwroot
@@ -135,5 +136,15 @@ public IActionResult About()
     <li><a asp-controller="App" asp-action="About">About</a></li>
    </ul>
 </menu>
+
+```
+
+##Razor Pages
+```
+Create pages: Pages\Error.cshtml
+
+@page
+<h2>Sorry...</h2>
+<p>We've had a problem. Please retry later</p>
 
 ```
