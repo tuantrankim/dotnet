@@ -159,20 +159,20 @@ Controller: Add [HttpPost("contact"]
 <form method="post">
   <label>Your Name:</label>
   <br/>
-  <input/>
+  <input name="name"/>
   <br/>
   
   <label>Email:</label>
   <br/>
-  <input type="email"/>
+  <input type="email" name="email"/>
   <br/>
   
   <label>Subject:/label>
   <br/>
-  <input type="text"/>
+  <input type="text" name="subject"/>
   <br/>
   
-  <textarea rows="4"></textarea>
+  <textarea rows="4" name="message"></textarea>
   <br />
   
   <input type="submit" value="Send Message" />
@@ -185,4 +185,60 @@ public IActionResult Contact(object model)
 {
   return View();
 }
+```
+##Model Binding
+//ViewModels/ContactViewModel.cs
+with ContactViewModel we can use the class in the post controller action
+in _ViewImports.cshtml add @using Hello.ViewModels
+in View Contact.cshtml add @model ContactViewModel
+similarly, instead of using name, using asp-for to comunicate with action post paramter 
+
+```
+//Contact.cshtml
+@model ContactViewModel
+@{
+  ViewBag.Title = "Contact Us";
+}
+
+<h2>@ViewBag.Ttile</h2>
+<form method="post">
+  <label>Your Name:</label>
+  <br/>
+  <input name="name"/>
+  <br/>
+  
+  <label>Email:</label>
+  <br/>
+  <input name="email" type="email"/>
+  <br/>
+  
+  <label>Subject:/label>
+  <br/>
+  <input name="subject" type="text"/>
+  <br/>
+  
+  <textarea name="message" rows="4"></textarea>
+  <br />
+  
+  <input type="submit" value="Send Message" />
+</form>
+
+```
+```
+[HttpPost("contact")]
+public IActionResult Contact(ContactViewModel model)
+{
+  return View();
+}
+```
+
+```
+public class ContactViewModel
+{
+  public string Name { get; set; }
+  public string Email { get; set; }
+  public string Subject { get; set; }
+  public string Message { get; set; }
+}
+
 ```
