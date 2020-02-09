@@ -92,3 +92,13 @@ public IActionResult Index()
   Layout = "_Layout"; //Setting the layout to be _Layout.cshtml file
 }
 ```
+
+##Controller
+
+```
+public IActionResult Contact()
+{
+  ViewBag.Title = "Contact Us";
+  return View();
+}
+```
