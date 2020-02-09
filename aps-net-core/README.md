@@ -32,4 +32,18 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
   app.UseNodeModules();//mapping node module to wwwroot
 }
 
+
+//Startup.cs
+public void Configure(IApplicationBuilder app, IHostingEnvironment evn)
+{
+  // Add middle ware - order is important
+  app.UseStaticFiles();//use static file under folder wwwroot
+  app.UseNodeModules();//mapping node module to wwwroot
+  app.UseRouting();
+  app.UseEndpoints(cfg=>{
+    cfg.MapControllerRoute("Fallback",
+      "{controller}/{action}/{id?}",
+      new { controller = "App", action = "Index"});
+  });
+}
 ```
