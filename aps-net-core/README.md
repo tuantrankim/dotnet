@@ -101,4 +101,37 @@ public IActionResult Contact()
   ViewBag.Title = "Contact Us";
   return View();
 }
+
+public IActionResult About()
+{
+  ViewBag.Title = "About Us";
+  return View();
+}
+```
+
+##View Import
+```
+//Views/_ViewImports.cshtml
+@Using Hello.Controllers
+@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+
+//Then we can use asp- in cshtml file
+<menu>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/app/contact">Contact</a></li>
+    <li><a href="/app/about">About</a></li>
+   </ul>
+</menu>
+
+//using tag helper
+
+<menu>
+  <ul>
+    <li><a asp-controller="App" asp-action="Index">Home</a></li>
+    <li><a asp-controller="App" asp-action="Contact">Contact</a></li>
+    <li><a asp-controller="App" asp-action="About">About</a></li>
+   </ul>
+</menu>
+
 ```
