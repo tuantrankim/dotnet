@@ -148,3 +148,33 @@ Create pages: Pages\Error.cshtml
 <p>We've had a problem. Please retry later</p>
 
 ```
+
+##MVC http post
+//Contact.cshtml
+View: Use form method = "post"
+Controller: Add [HttpPost]
+```
+<h2>@ViewBag.Ttile</h2>
+<form method="post">
+  <label>Your Name:</label>
+  <br/>
+  <input/>
+  <br/>
+  
+  <label>Email:</label>
+  <br/>
+  <input type="email"/>
+  <br/>
+  
+  <label>Subject:/label>
+  <br/>
+  <input type="text"/>
+  <br/>
+  
+  <textarea rows="4"></textarea>
+  <br />
+  
+  <input type="submit" value="Send Message" />
+</form>
+
+```
