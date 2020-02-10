@@ -280,7 +280,9 @@ public IActionResult Contact(ContactViewModel model)
   if (ModelState.IsValid)
   {
     // Send the email
-    
+    _mailService.SendMessage("quoc.nguyen@gmail.com", model.Subject, $"From: {model.Name} - {model.Email}, Message: {model.Message}");
+    ViewBag.UserMessage = "Mail Sent";
+    ModelState.Clear();//clear the form
     
   }
   else
@@ -323,4 +325,57 @@ at Contact.cshtml add @section Scripts
   <script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js">
 </script>
 }
+```
+
+##Dummy Mail Service - use log
+Add file Services/NullMailService.cs
+right click NullMailService to extract IMailService interface
+```
+using Microsoft.Extensions.Logging;
+namespace Hello.Services
+{
+  public class NullMailService: IMailService
+  {
+    private readonly ILogger<NullMailService> _logger;
+    
+    public NullMailService(ILogger<NullMailService> logger)
+    {
+      _logger = logger;
+    }
+    public void SendMessage(string, to, string subject, string body)
+    {
+      // Log the message
+    
+    }
+  }
+}
+
+//The extract interface
+namespace Hello.Services
+{
+  public interface IMailService
+  {
+    void SendMessage(string to, string subject, string body);
+  }
+}
+
+```
+
+Add MailService to ConfigureServices at Startup.cs file
+
+```
+  public void ConfigureServices(IServiceCollection services)
+  {
+    services.AddTransient<IMailService, NullMailService>();
+    // Support for real mail service
+  }
+```
+
+Inject MailService into controller at file AppController.cs
+```
+  private readonly IMailService _mailService;
+  public AppController(IMailService mailService)
+  {
+    _mailService = mailService; 
+  }
 ```
