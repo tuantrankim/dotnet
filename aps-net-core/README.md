@@ -630,6 +630,12 @@ cmd> dotnet ef migrations add SeedDate
 
 ##Seeding the Databalse using entity framework
 ```
+A better way to generate missing data on the start up of the web server, so we don't need to run "ef migration"
+1- add a seeder
+2- register in Startup.cs
+3- envoke in Program.cs Main
+
+
 //Add new file Data/HelloSeeder.cs
 namespace Hello.Data
 {
@@ -681,6 +687,8 @@ protected
 {
 }
 //Program.cs
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 public class Program
 {
   public static void Main(string[] args)
@@ -712,4 +720,20 @@ public void ConfigureServices(IServiceCollection services)
   
   services.AddTransient<HelloSeeder>();
 }
+
+//Using in AppController.cs
+private readonly HelloContext _ctx;
+public AppController(IMailService mailService, HelloContext ctx)
+{
+  _mailSErvice = mailServie;
+  _ctx = ctx;
+}
+
+public IActionResult Index()
+{
+  var results = _ctx.Product.ToList();
+  return View(results);
+}
+
+
 ```
