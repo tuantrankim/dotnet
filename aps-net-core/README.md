@@ -379,3 +379,16 @@ Inject MailService into controller at file AppController.cs
     _mailService = mailService; 
   }
 ```
+
+##Bootstrap
+```
+Package.json include dependencies
+"bootstrap": "^4.1.1"
+_Layout.cshtml add Link to css and add JS
+<link href="~/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+at the end of the file right after jquery script, add bootstrap JS
+<script src="~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+```
