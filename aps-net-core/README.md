@@ -965,3 +965,88 @@ namespace Hello.Controllers
     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
    }
 ```
+
+```
+//Add new controller Controllers/OrderController.cs
+[Route("api/[Controller]")]
+namespace Hello.Controllers
+{
+  private readonly IHelloRepository _repository;
+  private readonly ILogger<OrdersController> _logger;
+  
+  public OrdersController(IHelloRepository repository, ILogger<OrdersController> logger)
+  {
+    _repository = repository;
+    _logger = logger;
+  }
+  
+  [HttpGet]
+  public IActionResult Get()
+  {
+    try
+    {
+      return OK(_repository.GetAllOrders());
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Failed to get orders: {ex}");
+      return BadRequest("Failed to get orders");
+    }
+  }
+
+  [HttpGet("{id:int}")]
+  public IActionResult Get(int id)
+  {
+    try
+    {
+      var order = repository.GetOrderById(id);
+      if (order != null) return OK(order);
+      else return NotFound();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Failed to get orders: {ex}");
+      return BadRequest("Failed to get orders");
+    }
+  }
+    
+}
+
+//Add IHelloRepository interface
+IEnumerable<Order> GetAllOrders();
+Order GetOrderById(int id);
+
+//Implement new method in HelloRepository.cs
+public IEnumerable<Order> GetAllOrders()
+{
+  //return _ctx.Orders.ToList();
+  //Include other object in response
+  return _ctx.Orders
+              .Include(o => o.Items)
+              .ThenInclude(i => i.Product)
+              .ToList();
+  
+}
+
+public Order GetOrderById(int id)
+{
+  //return _ctx.Orders.Find(id);
+  //Include other object in response
+  return _ctx.Orders
+              .Include(o => o.Items)
+              .ThenInclude(i => i.Product)
+              .Where(o => o.Id == id)
+              .FirstOrDefault();
+  
+}
+//To ignore "Self referencing loop detected for property .."
+//Add the service in Startup.cs
+// the ignore just trim off the self reference object
+Services.AddMvc()
+  .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+```
+
+##Implementing POST
+```
+
+```
