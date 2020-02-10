@@ -390,5 +390,27 @@ at the end of the file right after jquery script, add bootstrap JS
 <script src="~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 
+useful boostrap class
+<body>
+<header class="container">
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md">
+    <h1 class="navbar-brand">Welcome to DEMO</h1>
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#theMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="theMenu" class="navbar-collapse collapse">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" asp-controller="App" asp-action="Index">Home</a>
+          <a class="nav-link" asp-controller="Contact" asp-action="Contact">Contact</a>
+          <a class="nav-link" asp-controller="About" asp-action="About">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+ </header>
+</body>
+</header>
+  
 
 ```
