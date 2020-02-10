@@ -1,4 +1,6 @@
 https://app.pluralsight.com/library/courses/aspnetcore-mvc-efcore-bootstrap-angular-web/table-of-contents
+From: Shawn Wildermuth
+
 
 ```
 Install Microsoft .Net Core sdk
@@ -866,4 +868,100 @@ public IEnumerable<Product> GetAllProducts()
     return null;
   }
 }
+```
+
+##Creating the API
+```
+//Create new controller: ProductsController
+
+[Route("api/[Controller]")]
+namespace Hello.Controllers
+{
+  public class ProductsController : Controller
+  {
+    private readonly IHelloRepository _repository;
+    private readonly ILogger<ProductsController> _logger;
+    public ProductsController(IHelloRepository repository, ILogger<ProductsController> logger)
+    {
+      _repository = repository;
+      _logger = logger;
+    }
+    
+    // Instead of using this simple method. We need to return a JsonResult in case of exception
+    [HttpGet]
+    public IEnumerable<Product> Get()
+    {
+        return _repository.GetAllProducts();
+    }
+    
+    [HttpGet]
+    public JsonResult Get()
+    {
+      try
+      {
+        return Json(_repository.GetAllProducts());
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Failed to get products: {ex}");
+        return json("Bad request");
+      }
+    }
+    
+    //And better to support not just JSON
+    //But this code below doesn't support tool like SWAGGER because IActionResult isn't strong type
+    
+    [HttpGet]
+    public IActionResult Get()
+    {
+      try
+      {
+        return OK(_repository.GetAllProducts());
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Failed to get products: {ex}");
+        return BadRequest("Bad request");
+      }
+    }
+  }
+}
+```
+
+```
+//To support the tool like Swagger. Need to add more detail for the class and using ControllerBase instead
+[Route("api/[Controller]")]
+[ApiController]
+[Produces("application/json")]
+namespace Hello.Controllers
+{
+  public class ProductsController : ControllerBase
+  {
+  }
+  
+   [HttpGet]
+   [ProducesResponseType(200)]
+   [ProducesResponseType(400)]
+    public ActionResult<IEnumerable<Product>> Get()
+    {
+      try
+      {
+        return OK(_repository.GetAllProducts());
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Failed to get products: {ex}");
+        return BadRequest("Bad request");
+      }
+    }
+}
+   
+   //For old MVC core, we need to opt-in some new feature from 2.1
+   //Add the service in Startup.cs
+   public void ConfigureServices(IServiceCollection services)
+   {
+    ...
+    services.AddMvc()
+    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+   }
 ```
