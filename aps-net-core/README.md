@@ -545,20 +545,60 @@ namespace Hello.Data
 {
   public class HelloContext : DbContext
   {
+    public HelloContext(DbContextOptions<HelloContext>)
+    {
+    }
     public DbSet<Product> Products {get; set;}
     public DbSet<Order> Orders {get; set;}
   }
 }
 ```
-##Add DbContext to services
+##Add DbContext to services and configuration
 ```
 //Startup.cs
-public void ConfigureServices(IserviceCollection services)
+public class Startup
 {
-  services.AddDbContext<HelloContext>(cfg => 
-  {
+  private readonly IConfiguration _config;
   
-  });
+  public Startup(IConfiguration config)
+  {
+    _config = config;
+  }
+  public void ConfigureServices(IserviceCollection services)
+  {
+    services.AddDbContext<HelloContext>(cfg => 
+    {
+      cfg.Use.UseSqlServer(_config.GetConnectionString("HelloConnectionString"));
+    });
+  }
+}
+
+//Program.cs
+public static IWebHost BuildWebHost(string[] args)=>
+  WebHost.CreateDefaultBuilders(args)
+    .ConfigureAppConfiguration(SetupConfiguration)
+    .UseStartup<Startup>()
+    .Build();
+    
+private static void SetupConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder builder)
+{
+  // Removing the default configuration options
+  builder.Sources.Clear();
+  
+  // Structure in hireachy so the overriding will occurr
+  builder.AddJsonFile("config.json", false, true)
+        //.AddXmlFile("config.xml", true)
+        .AddEnvironmentVariables();
+}
+
+//add new config.json
+{
+  "Colors": {
+    "Favorite": "blue"
+  },
+  "ConnectionStrings": {
+    "HelloConnectionString": "server=(localdb)\\ProjectsV13;Database=HelloDb;Integrated Security=true;MultipleActiveResultSets=true;"
+   }
 }
 ```
 ##Install dotnet-ef tool in global
