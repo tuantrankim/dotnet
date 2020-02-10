@@ -827,3 +827,43 @@ public IActionResult Shop()
   }
 </div>
 ```
+
+###Logging errors
+```
+// Add to config.json
+// apply filter for Microsoft.*Logger to Warning others like Hello.* use Information
+
+"Logging": {
+  "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
+  }
+}
+
+// Add logger to HelloRepository.cs
+using Microsoft.Extensions.Logging;
+
+private readonly ILogger<HelloRepository> _logger
+public HelloRepository(HelloContext ctx, ILogger<HelloRepository> logger)
+{
+  ...
+  _logger = logger
+}
+
+public IEnumerable<Product> GetAllProducts()
+{
+  try
+  {
+    _logger.LogInformation("GetAllProducts was called")
+    
+    return _ctx.Products
+                .OrderBy(p => p.Title)
+                .ToList();
+  }
+  catch (Exception ex)
+  {
+    _logger.LogError($"Failed to get all products: {ex}");
+    return null;
+  }
+}
+```
