@@ -301,3 +301,25 @@ Add to package.json dependencies
   "jquery-validation": "^1.17.0",
   "jquery-validation-unobtrusive": "^3.2.10"
 ```
+
+at _Layout.cshtml add @RenderSection("scripts")
+
+```
+  <script src="~/node_modules/jquery/dist/jquery.min.js"></script>
+  <script srt+"~/js/index.js"></script>
+  @RenderSection("scripts")
+</body>
+</html>
+```
+at Contact.cshtml add @section Scripts
+
+```
+@model ContactViewModel
+@{
+  ViewBag.Title = "Contact Us";
+}
+@section Scripts {
+<script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js">
+<script src="~/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+}
+```
