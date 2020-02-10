@@ -630,6 +630,52 @@ cmd> dotnet ef migrations add SeedDate
 
 ##Seeding the Databalse using entity framework
 ```
+//Add new file Data/HelloSeeder.cs
+namespace Hello.Data
+{
+  public class HelloSeeder
+  {
+    private readonly HelloContext _ctx;
+    private readonly IHostingEnvironment _hosting;
+    public HelloSeeder(HelloContext ctx, IHostingEnvironment hosting)
+    {
+      _ctx = ctx;
+      _hosting = hosting;
+    }
+    
+    public void Seed()
+    {
+      _ctx.Database.EnsureCreated();
+      if(!_ctx.Products.Any())
+      {
+        //Need to create sample data
+        //Load the data from Json
+        var filePath = Path.Combine(_hosting.ContentRootPath, "Data/art.json");
+        var json = File.ReadAllText(filePath);
+        var products = JsonConvert.DeserializeObject<IEnumerable<Product>>(json);
+        _ctx.Products.AddRange(products);
+        
+        var order = _ctx.Orders.Where(o => o.Id == 1).FirstOrDefault();
+        if (order != null)
+        {
+          order.Items = new List<OrderItem>()
+          {
+            new OrderItem()
+            {
+              Product = products.First(),
+              Quantity = 5,
+              UnitPrice = products.First().Price
+            }
+          }
+        }
+        
+        _ctx.SaveChanges();
+      }
+    }
+  }
+}
+
+
 //HelloContext.cs
 protected
 {
