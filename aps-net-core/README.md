@@ -307,7 +307,7 @@ at _Layout.cshtml add @RenderSection("scripts")
 ```
   <script src="~/node_modules/jquery/dist/jquery.min.js"></script>
   <script srt+"~/js/index.js"></script>
-  @RenderSection("scripts")
+  @RenderSection("scripts", false)
 </body>
 </html>
 ```
@@ -319,7 +319,8 @@ at Contact.cshtml add @section Scripts
   ViewBag.Title = "Contact Us";
 }
 @section Scripts {
-<script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js">
-<script src="~/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+  <script src="~/node_modules/jquery-validation/dist/jquery.validate.min.js">
+  <script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js">
+</script>
 }
 ```
