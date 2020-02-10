@@ -412,5 +412,58 @@ useful boostrap class
 </body>
 </header>
   
+```
+##Bootstrap Grid
+```
+12 cols example
+.col-9  .col-3
+.col-8.offset-2
+
+.col-xl-xx  >=1200px  desktop
+.col-lg-xx  >=992px laptop
+.col-md-xx  >=768px ipad
+.col-sm-xx  <768px  phone
+.col-xx     <576px  very small phone
+
+Example:
+In _Layout.cshtlm
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+In Contact.cshtml
+
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <div class="card card-body bg-light">
+      <form method="post">
+      </form>
+    </div>
+  </div>
+  <div class="col-md-3">
+  </div>
+</div>
+```
+
+##Bootstrap Forms
+```
+use class: form-group, form-control
+
+<div class="form-group">
+  <label asp-for="Email">Email:</label>
+  <input type="email" asp-for="Email" class="form-control" />
+  <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+
+
+<div class="form-group">
+  <label asp-for="Subject">Subject:</label>
+  <input type="text" asp-for="Subject" class="form-control" />
+  <span asp-validation-for="Subject"></span>
+</div>
+
+<div class="form-group">
+  <input type="submit" value="Send Message" class="btn btn-primary" />
+  <div class="text-success">@ViewBag.UserMessage</div>
+</div>
 
 ```
