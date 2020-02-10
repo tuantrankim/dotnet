@@ -737,3 +737,93 @@ public IActionResult Index()
 
 
 ```
+
+##Repository pattern
+
+```
+-Dependency injection helps on testing
+-Dependency ijection - Register with services in Startup.cs
+
+//Extracted IHelloRepository.cs
+public interface IHelloRepository
+{
+  IEnumerable<Product> GetAllProducts();
+  IEnumerable<Product> GetProductsByCategory(string category);
+  bool SaveAll();
+}
+//Data/HelloRepository.cs
+public class HelloRepository: IHelloRepository
+{
+  private readonly HelloContext _ctx;
+  
+  pulbic HelloRepository(HelloContext ctx)
+  {
+    _ctx = ctx;
+  }
+  
+  public IEnumerable<Product> GetAllProducts()
+  {
+    return _ctx.Products
+                .OrderBy(p => p.Title)
+                .ToList();
+  }
+  
+  public IEnumberable<Product> GetProductByCategory(string category)
+  {
+    return _ctx.Products
+                .Where(p => p.Category == category)
+                .ToList();
+  }
+  
+  public bool SaveAll()
+  {
+    return _ctx.SaveChanges() > 0 ;
+  }
+}
+
+//Startup.cs - Register for dependency injection
+public void ConfigureServices(IServiceCollection services)
+{
+  ...
+  services.AddScoped<IHelloRepository, HelloRepository>();
+}
+
+//Using in AppController.cs
+//Replace the context to use repository instead
+
+private readonly IHelloRepository _repository;
+public AppController(IMailService mailService, IHelloRepository repository)
+{
+  _mailService = mailService;
+  _repository = repository;
+}
+
+public IActionResult Shop()
+{
+  var results = _repository.GetAllProducts();
+  return View(results);
+}
+
+//Shop.cshtml
+@model IEnumberable<Product>
+<h1>Shop</h1>
+<p>Count: @Model.Count()</p>
+<div class="row">
+  @foreach (var p in Model)
+  {
+    <div class="col-md-3">
+      <div class="border bg-light rounded p-1">
+        <img src="~/img/@(p.ArtId).jpg" class="img-fluid" alt="@p.Title" />
+        <h3>@p.Category - @p.Size</h3>
+        <ul>
+          <li>Price: $@p.Price</li>
+          <li>Artist: @p.Artist</li>
+          <li>Title: @p.Title</li>
+          <li>Description: @p.ArtDescription</li>
+        </ul>
+        <button id="buyButton" class="btn btn-success">Buy</button>
+      </div>
+    </div>
+  }
+</div>
+```
