@@ -545,13 +545,34 @@ namespace Hello.Data
 {
   public class HelloContext : DbContext
   {
-    public HelloContext(DbContextOptions<HelloContext>)
+    public HelloContext(DbContextOptions<HelloContext> options): base(options)
     {
     }
     public DbSet<Product> Products {get; set;}
     public DbSet<Order> Orders {get; set;}
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      base.OnModelCreating(modelBuilder);
+     // modelBuilder.Entity<Product>()
+     //   .Property(p=>p.Title)
+     //   .HasMaxLength(50);
+     
+     // Simple way to seed data. To seed more complex data using a different way after
+     // we don't use this way bc this will run everytime we new HelloContext.
+     // We want to run this when the application start (only 1 time) to get better performance
+     modelBuilder.Entity<Order>()
+      .HasData(new Order()
+      {
+        Id = 1,
+        OrderDate = DateTime.UtcNow,
+        OrderNumber = "12345"
+      });
+    }
   }
 }
+// to generate seed data, run the command
+cmd> dotnet ef migrations add SeedDate
 ```
 ##Add DbContext to services and configuration
 ```
@@ -604,3 +625,45 @@ private static void SetupConfiguration(WebHostBuilderContext ctx, IConfiguration
 ##Install dotnet-ef tool in global
 cmd> dotnet tool install dotnet-ef -g  
 cmd> dotnet ef database update
+//to generate seed file
+cmd> dotnet ef migrations add SeedDate
+
+##Seeding the Databalse using entity framework
+```
+//HelloContext.cs
+protected
+{
+}
+//Program.cs
+public class Program
+{
+  public static void Main(string[] args)
+  {
+    var host = BuildWebHost(args);
+    //Instantiate and build up the seeder
+    RunSeeding(host);
+    host.Run();
+  }
+}
+
+private static void RunSeeding(IWebHost host)
+{
+  var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+  using (var scope = scopeFactory.CreateScope())
+  {
+    var seeder = scope.ServiceProvider.GetService<HelloSeeder>();
+    seeder.Seed();
+  }
+}
+
+//Register at Startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddDbContext<HelloContext>(cfg =>
+  {
+    cfg.UseSqlServer(_config.GetConnectionString("HelloConnectionString"));
+  });
+  
+  services.AddTransient<HelloSeeder>();
+}
+```
