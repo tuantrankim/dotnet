@@ -467,3 +467,12 @@ use class: form-group, form-control
 </div>
 
 ```
+##Font awesome
+```
+Add a dependency to package.json
+"font-awesome": "^4.7.0"
+Add link to font-awesome.min.css
+<link href="~/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+example using
+<i class="fa fa-envelop"></i>
+```
