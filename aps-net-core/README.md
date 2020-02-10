@@ -476,3 +476,91 @@ Add link to font-awesome.min.css
 example using
 <i class="fa fa-envelop"></i>
 ```
+
+#Entity framework core
+```
+Add new file
+Data/Entities/
+Clone or download from github
+https://github.com/psauthor/BuildingASPNETCore2
+Add some resources: Product.cs, Order.cs, OrderItem.cs
+Add Nuget package:
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Design
+Create context object
+```
+
+```
+//Data/Entities/Product.cs
+namespace Hello.Data.Entities
+{
+  public class Product
+  {
+    public int Id {get; set;}
+    public string Category {get; set;}
+    public string Size {get; set;}
+    public decimal Price {get;set;}
+    public string Title {get; set;}
+    public string ArtDescription {get; set;}
+    public string ArtDating {get; set;}
+    public string ArtId {get; set;}
+    public string Artist {get; set;}
+    public DateTime ArtistBirthDate {get; set;}
+    public DateTime ArtistDeathDate {get; set;}
+    public string ArtistNationality {get; set;}
+  }
+}
+```
+
+```
+//Data/Entities/Order.cs
+namespace Hello.Data.Entities
+{
+  public class Order
+  {
+    public int Id {get; set;}
+    public DateTime OrderDate {get; set;}
+    public string OrderNumber {get; set;}
+    public ICollection<OrderItem> Items {get;set;}
+  }
+}
+```
+
+```
+//Data/Entities/OrderItem.cs
+namespace Hello.Data.Entities
+{
+  public class Order
+  {
+    public int Id {get; set;}
+    public Product Product {get; set;}
+    public int Quantity {get; set;}
+    public Order Order {get;set;}
+  }
+}
+```
+```
+//Data/HelloContext.cs
+namespace Hello.Data
+{
+  public class HelloContext : DbContext
+  {
+    public DbSet<Product> Products {get; set;}
+    public DbSet<Order> Orders {get; set;}
+  }
+}
+```
+##Add DbContext to services
+```
+//Startup.cs
+public void ConfigureServices(IserviceCollection services)
+{
+  services.AddDbContext<HelloContext>(cfg => 
+  {
+  
+  });
+}
+```
+##Install dotnet-ef tool in global
+cmd> dotnet tool install dotnet-ef -g  
+cmd> dotnet ef database update
