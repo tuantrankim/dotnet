@@ -1078,5 +1078,70 @@ public void AddEntity(object model)
 Services.AddMvc()
   .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 ```
+##API Validation and View Models
+```
+//Instead using Entity class, using ViewModel for validation
+//Add ViewModels/OrderViewModel.cs
 
+using System.ComponentModel.DataAnotations;
+namespace Hello.ViewModels
+{
+  public class OrderViewModel
+  {
+    public int OrderId {get; set;}
+    public DateTime OrderDate {get; set;}
+    [Required]
+    [MinLength(4)]
+    public string OrderNumber {get; set;}
+  }
+}
+
+//OrdersController.cs
+ [HttpPost]
+  public IActionResult Post([FromBody]OrderViewModel model)
+  {
+    try
+    {
+      if (ModelState.IsValid)
+      {
+        // converting ViewModel to Model
+        var newOrder = new Order()
+        {
+          OrderDate = model.OrderDate,
+          OrderNumber = model.OrderNumber,
+          Id = model.OrderId
+        };
+        
+        // some validation
+        if (newOrder.OrderDate == DateTime.MinValue)
+        {
+          newOrder.OrderDate = DateTime.Now;
+        }
+        
+        _repository.AddEntity(newModel);
+        if(_repository.SaveAll())
+        { 
+          var vm = new OrderViewModel()
+          {
+            OrderId = newOrder.Id,
+            OrderDate = newOrder.OrderDate,
+            OrderNumber = newOrder.OrderNumber
+          }
+          //instead of return 200: Ok, we return 201: Created 
+          return Created($"/api/orders/{vm.OrderId}", vm);
+        }
+      }
+      else
+      {
+        return BadRequest(ModelState);
+      }
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Failed to save new order: {ex}");
+    }
+    
+    return BadRequest("Failed to save new order");
+  }
+```
 
