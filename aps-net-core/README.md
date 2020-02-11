@@ -1,6 +1,7 @@
 https://app.pluralsight.com/library/courses/aspnetcore-mvc-efcore-bootstrap-angular-web/table-of-contents
 From: Shawn Wildermuth
-
+watch more
+https://www.pluralsight.com/courses/building-api-aspdotnet-core
 
 ```
 Install Microsoft .Net Core sdk
@@ -1169,6 +1170,9 @@ namespace Hello.Data
           .ForMember(o => o.OrderId, ex => ex.MapFrom(o => o.Id))
           // Accept 2 ways mapping
           .ReverseMap();
+          
+      CreateMap<OrderItem, OrderItemViewModel>()
+        .ReverseMap();
     }
   }
 }
@@ -1256,5 +1260,69 @@ public IActionResult Post([FromBody]OrderViewModel model)
   return BadRequest("Failed to save new order");
 }
   
+// How to get Items under Orders  like : http://localhost:8888/api/orders/1/items
+// Add OrderItemsController.cs
+namespace Hello.Controllers
+{
+  [Route("/api/orders/{orderid}/items")]
+  public class OrderItemsController: Controller
+  {
+    private readonly IHelloRepository _repository;
+    Private readonly ILogger<OrderItemsController> _logger;
+    private readonly IMapper _mapper;
+
+    public OrderItemsController(IHelloRepository repository, 
+                                ILogger<OrderItemsController> logger,
+                                IMapper mapper)
+    {
+      _repository = repository;
+      _logger = logger;
+      _mapper = mapper;
+    }
+    
+    //http://localhost:8888/api/orders/1/items
+    [HttpGet]
+    public IActionResult Get(int orderId)
+    {
+      var order = _repository.GetOrderById(orderId);
+      if (order != null) return Ok(_mapper.Map<IEnumerable<OrderItem>, IEnumerable<OrderItemViewModel>>(order.Items)
+      else return NotFound();
+    }
+    
+    [HttpGet("{id}")]
+    public IActionResult Get(int orderId, int id)
+    {
+      var order = _repository.GetOrderById(orderId);
+      if (order != null) 
+      {
+        var item = order.Items.Where(i => i.Id == id).FirstOrDefault();
+        if (item != null) return Ok(_mapper.Map<OrderItem, OrderItemViewModel>(item)
+      }
+      
+      return NotFound();
+    }
+  }
+}
+
+//OrderItemViewModel.cs
+public class OrderItemViewModel
+{
+  public int Id {get; set;}
+  [Required]
+  public int Quantity {get; set;}
+  [Required]
+  public decimal UnitPrice {get; set;}
   
+  [Required]
+  public int ProductId {get; set;}
+  
+  //Instead of using Product object. Its properties will get Mapping automatically by name
+  
+  public string ProductCategory {get; set;}
+  public string ProductSize {get; set;}
+  public string ProductTitle {get; set;}
+  public string ProductArtist {get; set;}
+  public string ProductArtId {get; set;}
+}
+
 ```
