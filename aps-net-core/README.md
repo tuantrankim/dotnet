@@ -1446,5 +1446,29 @@ public async Task SeedAsync()
 ...
 seeder.SeedAsync().Wait();
 
+// Configure Identity in Startup.cs
+pulic void ConfigureServices(IServiceCollection services)
+{
+  services.AddIdentity<StoreUser, IdentityRole>( cfg =>
+  {
+    cfg.User.RequireUniqueEmail = true;
+    cfg.Password.RequiredLength = 8;
+    cfg.Password.RequireUppercase = true;
+    cfg.Password.RequireLowercase = true;
+    cfg.Password.RequireDigit = true;
+  })
+    .AddEntityFrameworkStores<HelloContext>();// UseStore will be stored on same Hello database
+    ...
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+  ...
+  app.UseAuthentication();
+  app.UseAuthorization();
+  app.UseRouting();
+  ...
+}
+
 
 ```
