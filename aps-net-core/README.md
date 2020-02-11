@@ -1009,12 +1009,37 @@ namespace Hello.Controllers
       return BadRequest("Failed to get orders");
     }
   }
+  
+  //model is come from the query string
+  [HttpPost]
+  public IActionResult Post(Order model)
+  
+  //model is come from body
+  [HttpPost]
+  public IActionResult Post([FromBody]Order model)
+  {
+    try
+    {
+      _repository.AddEntity(model);
+      if(_repository.SaveAll())
+      {      
+        //instead of return 200: Ok, we return 201: Created 
+        return Created($"/api/orders/{model.Id}", model);
+      }
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Failed to save new order: {ex}");
+    }
     
+    return BadRequest("Failed to save new order");
+  }
 }
 
 //Add IHelloRepository interface
 IEnumerable<Order> GetAllOrders();
 Order GetOrderById(int id);
+void AddEntity(object model);
 
 //Implement new method in HelloRepository.cs
 public IEnumerable<Order> GetAllOrders()
@@ -1039,6 +1064,14 @@ public Order GetOrderById(int id)
               .FirstOrDefault();
   
 }
+
+public void AddEntity(object model)
+{
+  _ctx.Add(model);
+}
+
+
+
 //To ignore "Self referencing loop detected for property .."
 //Add the service in Startup.cs
 // the ignore just trim off the self reference object
@@ -1046,7 +1079,4 @@ Services.AddMvc()
   .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 ```
 
-##Implementing POST
-```
 
-```
