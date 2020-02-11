@@ -1472,3 +1472,87 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 
 
 ```
+### AccountController.cs
+
+```
+namespace Hello.Controllers
+{
+  public class AccountController: Controller
+  {
+    private readonly ILogger<AccountController> _logger;
+    
+    public AccountController(ILogger<AccountController> logger)
+    {
+      _logger = logger;
+    }
+    
+    public IActionResult Login()
+    {
+      if (this.User.Identity.IsAuthenticated)
+      {
+        return RedirectToAction("Index", "App");
+      }
+      return View();
+    }
+  }
+}
+```
+
+### Login.cshtml
+```
+@model LoginViewModel
+@{
+  ViewBag.Title = "Login";
+}
+
+@section Scripts {
+  <script src="~/node_modules/jquery-validation/dist/jquery.validate.min.js">
+  <script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js">
+</script>
+
+<div class="row">
+  <div class="col-md-4 offset-md-4">
+    <form method="post">
+      <div class="form-group">
+        <label asp-for="Username">Username</label>
+        <input asp-for="Username" class="form-control"/>
+        <span asp-validation-for="Username" class="text-warning"></span>
+      </div>
+      
+      <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" type="password" class="form-control"/>
+        <span asp-validation-for="Password" class="text-warning"></span>
+      </div>
+      
+      <div class="form-group">
+        <div class="form-check">
+          <input asp-for="RememberMe" type="checkbox" class="form-check-input"/>
+          <label asp-for="RememberMe" class="form-check-label">Remember me?</label>
+        </div>
+        <span asp-validation-for="RememberMe" class="text-warning"></span>
+      </div>
+  
+      <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-success" />
+      </div>
+    </form>
+  </div>
+</div>
+
+```
+
+### LoginViewModel.cs
+```
+namespace Hello.ViewModels
+{
+  public class LoginViewModel
+  {
+    [Required]
+    public string Username {get; set}
+    [Required]
+    public string Password {get; set;}
+    public bool RememberMe {get; set;}
+  }
+}
+```
