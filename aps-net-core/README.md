@@ -84,7 +84,7 @@ public IActionResult Index()
 }
 ```
 
-##Layout page
+## Layout page
 
 ```
 //Views/Shared/_Layout.cshtml
@@ -1352,4 +1352,99 @@ public IActionResult Get(bool includeItems = true)
   }
 
 }
+```
+# ASP.NET Core Identity
+```
+1- Add Nuget Package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+2- Add new entity to store IdentityUser
+3- Update HelloContext to inherit IdentityDbContext
+4- Add Identity to database using dotnet command
+
+//2 -Add Data/Entities/StoreUser.cs
+
+using Microsoft.AspNetCore.Identity;
+
+namespace Hello.Data.Entities
+{
+  public class StoreUser: IdentityUser
+  {
+    public string FirstName {get; set;}
+    public string LastName {get; set;}
+  }
+}
+
+//3- HelloContext.cs
+
+using Microsoft.AspNetCore.Identity.EntityFameworkCore;
+namespace Hello.Data
+{
+  public class HelloContext: IdentityDbContext<StoreUser>
+  {
+  }
+  ...
+}
+
+//4- Using StoreUser
+//Adding to Data/Entities/Order.cs
+public class Order
+{
+  ...
+  public StoreUser User {get; set;} //The user that own the item
+}
+
+// Add Identity to DB
+// Generate Identity migration
+cmd> dotnet ef migrations add Identity
+// Drop old db
+cmd> dotnet ef database drop
+// all the migration will be executed when running application
+
+// Update Pogram.cs and HelloSeeder to seed a new user
+// HelloSeeder.cs
+
+private readonly UserManager<StoreUser> _userManager;
+public HelloSeeder(HelloContext ctx, IhostingEnvironment hosting, UserManager<StoreUser> userManager)
+{
+  ...
+  _userManager = userManager;
+}
+
+//Change Seed to SeedAsync()
+//public void Seed()
+public async Task SeedAsync()
+{
+  _ctx.Database.EnsureCreated();
+  
+  StoreUser user = await _userManager.FindByEmailAsync("admin@hello.com");
+  if (user == null)
+  {
+    user = new StoreUser()
+    {
+      FirstName = "Shawn",
+      LastName = "Wildermuth",
+      Email = "admin@hello.com",
+      UserName = "admin@hello.com"
+    };
+    
+    var result = await _userManager.CreateAsync(user, "P@ssw0rd");
+    if (result != IdentityResult.Success)
+    {
+      throw new InvalidOperationException("Could not create new user in seeder");
+    }
+  }
+  ...
+  // Add the user to order
+  if (order != null)
+  {
+    order.User = user;
+    ...
+  }
+}
+
+// Update Program.cs to use SeedAsync().Wait() instead of Seed()
+
+...
+seeder.SeedAsync().Wait();
+
+
 ```
