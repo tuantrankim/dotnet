@@ -1165,8 +1165,10 @@ namespace Hello.Data
     {
       // Mapping property to property
       CreateMap<Order, OrderViewModel>()
-      // Exception, using different mapping property name
-          .ForMember(o => o.OrderId, ex => ex.MapFrom(o => o.Id));
+          // Exception, using different mapping property name
+          .ForMember(o => o.OrderId, ex => ex.MapFrom(o => o.Id))
+          // Accept 2 ways mapping
+          .ReverseMap();
     }
   }
 }
@@ -1216,6 +1218,43 @@ public IActionResult Get(int id)
   }
 }
   
+[HttpPost]
+public IActionResult Post([FromBody]OrderViewModel model)
+{
+  try
+  {
+    if (ModelState.IsValid)
+    {
+      // converting ViewModel to Model
+      var newOrder =  _mapper.Map<OrderViewModel, Order>(model);
+
+      // some validation
+      if (newOrder.OrderDate == DateTime.MinValue)
+      {
+        newOrder.OrderDate = DateTime.Now;
+      }
+
+      _repository.AddEntity(newModel);
+      if(_repository.SaveAll())
+      { 
+        var vm = _mapper.Map<Order, OrderViewModel>(newModel);
+
+        //instead of return 200: Ok, we return 201: Created 
+        return Created($"/api/orders/{vm.OrderId}", vm);
+      }
+    }
+    else
+    {
+      return BadRequest(ModelState);
+    }
+  }
+  catch (Exception ex)
+  {
+    _logger.LogError($"Failed to save new order: {ex}");
+  }
+
+  return BadRequest("Failed to save new order");
+}
   
   
 ```
