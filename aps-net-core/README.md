@@ -1326,3 +1326,27 @@ public class OrderItemViewModel
 }
 
 ```
+####Using Query String for APIs
+```
+// If we want to query like this
+// http://localhost:8888/api/orders?includeItems=false
+// Edit OrdersController.cs
+
+[HttpGet]
+public IActionResult Get(bool includeItems = true)
+{
+  try
+  {
+    var result = _repository.GetAllOrders(includeItems);
+    //Need to modify repository.GetAllOrders to accept includeItems parameter
+    var mv = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(allOrders);
+    return OK(mv);
+  }
+  catch (Exception ex)
+  {
+    _logger.LogError($"Failed to get orders: {ex}");
+    return BadRequest("Failed to get orders");
+  }
+
+}
+```
