@@ -1145,3 +1145,38 @@ namespace Hello.ViewModels
   }
 ```
 
+##Using AutoMapper
+```
+1- Add nugetPackage: AutoMapper.Extensions.Microsoft.DependencyInjection
+2- Add new service into Startup.cs
+services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+3- Edit OrdersController
+
+private readonly IMapper _mapper;
+public OrderController(IHelloRepository repository,
+    ILogger<OrdersController> logger,
+    IMapper mapper)
+{
+    _repository = repository;
+    _logger = logger;
+    _mapper = mapper;
+}
+
+[HttpGet("{id:int}")]
+  public IActionResult Get(int id)
+  {
+    try
+    {
+      var order = repository.GetOrderById(id);
+      var mv = _mapper.Map<Order, OrderViewModel>(order);
+      if (order != null) return OK(mv);
+      else return NotFound();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Failed to get orders: {ex}");
+      return BadRequest("Failed to get orders");
+    }
+  }
+```
