@@ -1150,8 +1150,28 @@ namespace Hello.ViewModels
 1- Add nugetPackage: AutoMapper.Extensions.Microsoft.DependencyInjection
 2- Add new service into Startup.cs
 services.AddAutoMapper(Assembly.GetExecutingAssembly());
+3- Add type map configuration
+4- Edit OrdersController
 
-3- Edit OrdersController
+// 3- Add type map configuration
+// Create Data/HelloMappingProle.cs
+
+using AutoMapper;
+namespace Hello.Data
+{
+  public class HelloMappingProfile: Profile
+  {
+    public HelloMappingProfile()
+    {
+      // Mapping property to property
+      CreateMap<Order, OrderViewModel>()
+      // Exception, using different mapping property name
+          .ForMember(o => o.OrderId, ex => ex.MapFrom(o => o.Id));
+    }
+  }
+}
+
+// 4- OrdersController.cs
 
 private readonly IMapper _mapper;
 public OrderController(IHelloRepository repository,
@@ -1163,20 +1183,39 @@ public OrderController(IHelloRepository repository,
     _mapper = mapper;
 }
 
-[HttpGet("{id:int}")]
-  public IActionResult Get(int id)
+[HttpGet]
+public IActionResult Get()
+{
+  try
   {
-    try
-    {
-      var order = repository.GetOrderById(id);
-      var mv = _mapper.Map<Order, OrderViewModel>(order);
-      if (order != null) return OK(mv);
-      else return NotFound();
-    }
-    catch (Exception ex)
-    {
-      _logger.LogError($"Failed to get orders: {ex}");
-      return BadRequest("Failed to get orders");
-    }
+    var allOrders = _repository.GetAllOrders();
+    var mv = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(allOrders);
+    return OK(mv);
   }
+  catch (Exception ex)
+  {
+    _logger.LogError($"Failed to get orders: {ex}");
+    return BadRequest("Failed to get orders");
+  }
+}
+  
+[HttpGet("{id:int}")]
+public IActionResult Get(int id)
+{
+  try
+  {
+    var order = repository.GetOrderById(id);
+    var mv = _mapper.Map<Order, OrderViewModel>(order);
+    if (order != null) return OK(mv);
+    else return NotFound();
+  }
+  catch (Exception ex)
+  {
+    _logger.LogError($"Failed to get orders: {ex}");
+    return BadRequest("Failed to get orders");
+  }
+}
+  
+  
+  
 ```
