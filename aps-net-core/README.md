@@ -1475,15 +1475,19 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 ### AccountController.cs
 
 ```
+using Microsoft.AspNetCore.Identity;
+
 namespace Hello.Controllers
 {
   public class AccountController: Controller
   {
     private readonly ILogger<AccountController> _logger;
-    
-    public AccountController(ILogger<AccountController> logger)
+    private readonly SignInManger<StoreUser> _signInManager;
+    public AccountController(ILogger<AccountController> logger,
+        SignInManager<StoreUser> signInManager)
     {
       _logger = logger;
+      _signInManager = signInManager;
     }
     
     public IActionResult Login()
@@ -1494,6 +1498,35 @@ namespace Hello.Controllers
       }
       return View();
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> Login([FromBody]LoginViewModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        var result = _signInManager.PasswordSignInAsync(model.Username, 
+        model.Password, 
+        model.RememberMe,
+        false);
+        
+        if (result.Succeed)
+        {
+          if (Request.Query.Keys.Contains("ReturnUrl"))
+          { 
+            return Redirect(Request.Query["ReturnUrl"].First());
+          }
+          else
+          {
+            RedirectToAction("Shop", "App");
+          }
+        }
+      }
+      
+      // Show generic error if happening
+      ModelState.AddModelError("", "Failed to login");
+      return View();
+    }
+    
   }
 }
 ```
@@ -1512,7 +1545,8 @@ namespace Hello.Controllers
 
 <div class="row">
   <div class="col-md-4 offset-md-4">
-    <form method="post">
+    <form asp-action="Login" method="post">
+      <div asp-validation-summary="ModelOnly"></div>
       <div class="form-group">
         <label asp-for="Username">Username</label>
         <input asp-for="Username" class="form-control"/>
@@ -1556,3 +1590,22 @@ namespace Hello.ViewModels
   }
 }
 ```
+
+### Show login/logout in navigation bar - _Layout.cshtml
+```
+...
+@if (User.Identity.IsAuthenticated)
+{
+  <li class="nav-item">
+    <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a>
+  </li>
+}
+else
+{
+  <li class="nav-item">
+    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+  </li>
+}
+...
+```
+
