@@ -1,7 +1,7 @@
-####course
+#### course
 https://app.pluralsight.com/library/courses/aspnetcore-mvc-efcore-bootstrap-angular-web/table-of-contents
 From: Shawn Wildermuth
-####watch more
+#### watch more
 https://www.pluralsight.com/courses/building-api-aspdotnet-core
 https://pluralsight.com/courses/web-api-design
 https://pluralsight.com/courses/aspdotnetcore-implementing-securing-api
