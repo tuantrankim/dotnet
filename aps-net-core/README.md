@@ -1359,6 +1359,7 @@ public IActionResult Get(bool includeItems = true)
 2- Add new entity to store IdentityUser
 3- Update HelloContext to inherit IdentityDbContext
 4- Add Identity to database using dotnet command
+5- Add [Authrize] to restrict access on action
 
 //2 -Add Data/Entities/StoreUser.cs
 
@@ -1527,6 +1528,13 @@ namespace Hello.Controllers
       return View();
     }
     
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {
+      await _signInManager.SigOutAsync();
+      RedirectToAction("Index", "App");
+    }
+    
   }
 }
 ```
@@ -1609,3 +1617,4 @@ else
 ...
 ```
 
+## Using Identity in the API
