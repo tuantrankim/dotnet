@@ -157,7 +157,13 @@ Create pages: Pages\Error.cshtml
 
 ##MVC http post
 //Contact.cshtml
-View: Use form method = "post"
+View: Use form method = "post" . 
+        <form asp-controller="Demo" asp-action="Register" method="post">
+            <!-- Input and Submit elements -->
+        </form>
+        https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-3.1
+        
+        
 Add names to all input taga that need on server side 
 Controller: Add [HttpPost("contact"]
 ```
