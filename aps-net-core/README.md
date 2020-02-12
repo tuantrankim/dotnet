@@ -1623,4 +1623,110 @@ else
 ...
 ```
 
-## Using Identity in the API
+## Use Identity in the API
+```
+// Add Authentication services in Startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+  Services.AddIdentity<StoreUser, IdentityRole>(config =>
+  {
+  })
+    .AddEntityFrameworkStores<HelloContext>();
+  
+  services.AddAuthentication()
+      .AddCookie()
+      //need install nuget package Microsoft.AspNetCore.Authentication.JwtBearer
+      .AddJwtBearer(cfg =>
+      {
+        cfg.TokenValidationParameters = new TokenValidationParameters()
+        {
+          ValidIssuer = _config["Tokens:Issuer"],
+          ValidAudience = _config["Tokens:Audience"],
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]))
+        }
+      }); 
+}
+
+...
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+  ...
+  app.UseAuthentication();
+  app.UseAuthorization();
+  app.UseRouting();
+  ...
+}
+
+// Add Authorize to OrdersController.cs
+namespace Hello.Controllers
+{
+  [Route("api/[Controller]")]
+  // We are not using cookie authentication. Redirection is part of cookie authentication, similar to web pages
+  [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme]
+  public class OrdersController : Controller
+  {
+    ....
+    // we can set authorize for each action call or for the whole class
+  }
+}
+
+// AccountController.cs
+private readonly UserManager<StoreUser> _userManager;
+IConfiguration _config
+public AccountController(... , UserManager<StoreUser> userManager, IConfiguration config)
+{
+  ...
+  _userManager = userManager;
+  _config = config;
+}
+[HttpPost]
+public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
+{
+  if (ModelState.IsValid) //validation
+  {
+    var user = await _userManager.FindByNameAsync(model.Username)
+    
+    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+    
+    if (result.Succeeded)
+    {
+      // Create the token
+      var claims = new[]
+      {
+        //some look up information
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email), //name of the subject
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //unique string for each token
+        new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName), //unique name
+      }
+      
+      var key = key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+      /* Need to add a key to config.json
+      "Tokens": {
+        "Key" : "fdsafjdl;saj;jklfj;djsa;jdsa"
+        "Issuer": "localhost",
+        "Audience": "aaa"
+      }
+      */
+      
+      var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+      var token = new JwtSecurityToken(
+        _config["Tokens:Issuer"],
+        _config["Tokens:Audience"],
+        claims,
+        expires: DateTime.UtcNow.AddMinutes(30),
+        signingCredentials: creds
+      );
+      
+      var result = new 
+      {
+        token = new JwtSecurityTokenHandler().WriteToken(token),
+        expiration = token.ValidTo
+      };
+      
+      return Created("", results);
+    }
+  }
+  
+  return BadRequest();
+}
+```
