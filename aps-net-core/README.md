@@ -1679,6 +1679,22 @@ public AccountController(... , UserManager<StoreUser> userManager, IConfiguratio
   _userManager = userManager;
   _config = config;
 }
+[HttpGet]
+pubic IActionResult Get(bool includeItems = true)
+{
+  try
+  {
+    var username = User.Identity.Name;
+    
+    var result = _repository.GetAllOrdersByUser(username, includeItems);
+    return OK(_mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(result);
+  }
+  catch(Exception ex)
+  {
+    _logger.LogError($"Failed to get orders: {ex}");
+    return BadRequest("Failed to get orders");
+  }
+}
 [HttpPost]
 public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
 {
@@ -1729,4 +1745,37 @@ public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
   
   return BadRequest();
 }
+
+//IHelloRepository.cs
+...
+IEnumerable<Order> GetAllOrdersByUser(string username, bool includeItems);
+...
+//HelloRepository.cs
 ```
+public IEnumerable<Order> GetAllOrderByUser(string username, bool includeItems)
+{
+  if (includeItems)
+  {
+    return _ctx.Orders
+                .Where(o=> o.User.UserName == username)
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ToList();
+  }
+  else
+  {
+    return _ctx.Orders
+                .ToList();
+  }
+}
+  
+ //OrderItemsController.cs
+ namespace Hello.Controllers
+ {
+  [Route(/api/orders/{orderid}/items)]
+  [Authorize(AuthenticationSchemes=JwtbearerDefaults.AuthenticationScheme)]
+  public class OrderItemsController: Controller
+  {
+    //Similar to Oder, we need to add username to GetAllOrderItemsByUser
+  }
+ }
