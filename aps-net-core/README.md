@@ -1751,7 +1751,7 @@ public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
 IEnumerable<Order> GetAllOrdersByUser(string username, bool includeItems);
 ...
 //HelloRepository.cs
-```
+
 public IEnumerable<Order> GetAllOrderByUser(string username, bool includeItems)
 {
   if (includeItems)
@@ -1779,3 +1779,66 @@ public IEnumerable<Order> GetAllOrderByUser(string username, bool includeItems)
     //Similar to Oder, we need to add username to GetAllOrderItemsByUser
   }
  }
+```
+# Type Script
+```
+//Add Helloworld/tsconfig.json
+{
+  "include": ["wwwroot/ts/**/*.ts"],
+  "compilerOptions":{
+    "target": "es5",
+    "sourceMap": true
+  }
+}
+//Add wwwroot/ts/main.ts
+//import { StoreCustomer } from "./storecustomer";
+
+let shopper = new StoreCustomer("Shawn", "Widermuth");
+shopper.showName();
+
+//Add wwwroot/ts/storecustomer.ts
+//export class StoreCustomer{
+class StoreCustomer{
+  constructor(private firstName: string, private lastname: string){}
+
+
+  public visits: number = 0;
+  private ourName: string;
+
+  public showName(){
+    alert(this.firstName + " " + this.lastName);
+  }
+
+  get name(val){
+    this.ourName = val;
+  }
+
+  set name(){
+    return this.ourName;
+  }
+}
+
+// using the typescript (the compile js files) in view Shop.cshtml
+@model IEnumerable<Product>
+@section Scripts {
+  <script src="~/ts/storecustomer.js"></script>
+  <script src="~/ts/main.js"></script>
+}
+<h1>Shop</h1>
+<p>Count: @Model.Count()</p>
+@foreach (var p in Model)
+{
+  <div class="col-md-3">
+    <div class="well well-sm">
+      <img src="~/img/@(p.ArtId).jpg" class="img-responsive" alt="@p.Title" />
+    <h3>@p.Category - @p.Size</h3>
+    <ul class="product-props">
+      <li>Price: @p.Price</li>
+      <li>Artist: @p.Artist</li>
+      <li>Description: @p.ArtDescription</li>
+    </ul>
+    <button id="buyButton">Buy</button>
+  </div>
+  </div>
+}
+```
