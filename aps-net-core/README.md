@@ -1842,3 +1842,70 @@ class StoreCustomer{
   </div>
 }
 ```
+
+# Angular
+```
+npm update npm
+npm install @angular/cli -g
+
+create minimal version of angular app
+ng new hello-app --dryRun --skip-git --inline-template --inline-style --skip-tests
+
+remove dryRun 
+ng new hello-app --skip-git --inline-template --inline-style --skip-tests
+ng build
+ng serve
+
+copy the angular app to asp.net project
+create folder in the Asp.Net app Hello/HelloClient
+copy hello-app/src/*.* to Hello/HelloClient
+copy hello-app/angular.json, tsconfig.app.json, tsconfig.json to Hello
+copy from hello-app/src/package.json entire "scripts" section to the asp.net package.json before "private"
+also, copy all dependencies and append to the asp.net package.json dependencies
+also, copy "devDependencies"
+
+edit angular.json
+"sourceRoot": "HelloClient"
+"outputPath": "wwwroot/HelloClient"
+Repace all "src/" to "HelloCient/"
+
+edit ts.config.app.json
+"outDir": "./wwwroot/HelloClient/out-tsc/app"
+Repace all "src/" to "HelloCient/"
+
+cmd>cd Hello\Hello
+cmd>npm install
+cmd>ng build
+```
+### Shop.cshtml
+```
+@model IEnumerable<Product>
+@section Scripts{
+  <script scr="~/HelloCient/dist/runtime.js"></script>
+  <script scr="~/HelloCient/dist/polyfills.js"></script>
+  <script scr="~/HelloCient/dist/styles.js"></script>
+  <script scr="~/HelloCient/dist/vendor.js"></script>
+  <script scr="~/HelloCient/dist/main.js"></script>
+}
+<h1>Shop</h1>
+<the-shop></the-shop>
+```
+
+### app.component.ts
+```
+import {Component } from '@angular/core';
+
+@Component({
+  selector: 'the-shop',
+  template: `
+    <h1>
+      Welcome to {{title}}!!
+    </h1>
+  `,
+  styles: []
+})
+
+export class AppComponent {
+  title = 'Hell world';
+}
+```
