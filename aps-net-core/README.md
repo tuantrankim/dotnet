@@ -1897,15 +1897,24 @@ import {Component } from '@angular/core';
 
 @Component({
   selector: 'the-shop',
-  template: `
-    <h1>
-      Welcome to {{title}}!!
-    </h1>
-  `,
+  templateUrl: "./app.component.html",
   styles: []
 })
 
 export class AppComponent {
   title = 'Hell world';
 }
+```
+
+### app.component.html
+```
+<div class="row">
+  <div class="col-md-9">
+    <h3>{{title}}</h3>
+  </div>
+  <div class="col-md-3">
+    <h3>Cart</h3>
+  </div>
+</div>
+
 ```
