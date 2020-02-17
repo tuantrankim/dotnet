@@ -1929,8 +1929,9 @@ public IActionResult Shop()
 
 ### Add new file shop/productList.component.ts
 
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { DataService } from "../shared/dataService";
+import { Product } from "../shared/product";
 
 @Component({
   selector: "product-list",
@@ -1938,22 +1939,43 @@ import { DataService } from "../shared/dataService";
   styleUrl: []
 })
 
-export class ProductList{
+export class ProductList implements OnInit {
   constructor(private data: DataService){
-    
+    this.products = data.products;
   }
-  public product[];
+  public products: Product[] = [];
+  
+  ngOnInit(): void {
+    this.data.loadProducts()
+              .subscribe(success => {
+                if (success) {
+                  this.products = this.data.products;
+                }
+              });
+  }
 }
 
 ### Create new file productList.component.html
 <div class="row">
-  <ul>
-    <li *ngFor=" let p of productList">{{ p.title }}: {{ p.price| currency: "USD":true }}</li>
-  </ul>
+  <div class="product-info col-md-4" *ngFor="let p of products">
+    <div class="card bg-light p-1 m-1">
+  
+      <img src="/img/{{p.artId }}.jpg"  class="img-fluid" [alt]="p.title"/>
+      <he>{{ p.category }} - {{p.size}}</h3>
+      <ul class="product-props">
+        <li><strong>Price</strong>: {p.price | currency:"USD":true }}</li>
+        <li><strong>Artist</strong>: {{p.artist }}</li>
+        <li><strong>Title</strong>: {{ p.title }}</li>
+        <li><strong>Description</strong>: {{ p.artDescription }}</li>
+      </ul>
+      <button id="buyButton" class="btn btn-success">Buy</button>
+    </div>
+  </div>
 </div>
 
 ### Add ProductList to app.module.ts
 ...
+import {HttpClientModule } from "@angular/common/http";
 import { ProductList } from "./shop/produtList.component";
 import { DataService } from "./shared/dataService";
 
@@ -1964,6 +1986,7 @@ import { DataService } from "./shared/dataService";
   ],
   imports: [
     ...
+    HttpClientModule
   ],
   providers: [
     DataService
@@ -1973,20 +1996,50 @@ import { DataService } from "./shared/dataService";
 
 ### Create new file shared/dataService.ts
 
+import {HttpClient } from "@angular/common/http";
+import {Injectable } from "@angular/core";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { Product } from "./product";
+
+@Injectable()
 export class DataService{
-
-  public products = [{
-    title: "First Product",
-    price: 19.99
-  }, {
-   title: "Second Product",
-    price: 9.99
-  }, {
-   title: "Third Product",
-    price: 14.99
-  }  
-  ];
-
+  constructor(private http: HttpClient)
+  {
+  }
+  
+  public products: Product[] = [];
+  
+  loadProducts(): Observable<boolean> {
+    return this.http.get("/api/products")
+      .pipe(
+        map((data: any[]) =>{
+          this.products = data
+          return true;
+        })
+      );
+  }
 }
+
+//generate ts object from json
+//http://json2ts.com 
+### Create new file shared/product.ts
+
+export interface Product
+{
+  id: number;
+  category: string;
+  size: string;
+  price: number;
+  title: string;
+  artDescription: string;
+  artDating: string;
+  artId: string;
+  artist: string;
+  artistBirthDate: Date;
+  artistDeathDate: Date;
+  artistNationality: string;
+}
+
 
 ```
