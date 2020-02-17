@@ -1876,6 +1876,7 @@ Repace all "src/" to "HelloCient/"
 cmd>cd Hello\Hello
 cmd>npm install
 cmd>ng build
+cmd>ng build --watch
 ```
 ### Shop.cshtml
 ```
@@ -1913,8 +1914,58 @@ export class AppComponent {
     <h3>{{title}}</h3>
   </div>
   <div class="col-md-3">
-    <h3>Cart</h3>
+    <div class="card bg-light p-2">
+      <h3>Cart</h3>
+    </div>
   </div>
 </div>
 
+### Edit AppController.cs
+[Authorize]
+public IActionResult Shop()
+{
+  return View();
+}
+
+### Add new file shop/productList.component.ts
+
+import { Component } from "@angular/core";
+
+@Component({
+  selector: "product-list",
+  templateUrl: "productList.component.html",
+  styleUrl: []
+})
+
+export class ProductList{
+  public products = [{
+    title: "First Product",
+    price: 19.99
+  }, {
+   title: "Second Product",
+    price: 9.99
+  }, {
+   title: "Third Product",
+    price: 14.99
+  }  
+  ];
+}
+
+### Create new file productList.component.html
+<div class="row">
+  <ul>
+    <li *ngFor=" let p of productList">{{ p.title }}: {{ p.price| currency: "USD":true }}</li>
+  </ul>
+</div>
+
+### Add ProductList to app.module.ts
+...
+import { ProductList } from "./shop/produtList.component";
+
+@NgModule({
+  declarations:[
+    ...
+    ProductList
+  ],
+})
 ```
