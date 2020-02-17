@@ -2082,6 +2082,7 @@ export class Cart {
 ```
 <h3>Shopping cart</h3>
 <div>#/Items: {{ data.order.items.length}}</div>
+<div>Subtotal: {{data.order.subtotal}}</div>
 <table class="table table-condensed table-hover">
   <thead>
     <tr>
@@ -2129,12 +2130,24 @@ Cart
 
 ### Sharing data across components
 ```
+//Add dependency to package.json
+"lodash": "^4.17.4"
+
 //order.ts
+import * as _ from "lodash"; //this like a linq in javascript
 export class Order {
   orderId: number;
   orderDate: Date = new Date();
   orderNumber: string;
   items: Array<OrderItem> = new Array<OrderItem>();
+  
+  //calculate property
+  get subtotal(): number{
+    return _.sum(
+    _.map(this.items, i=> i.unitPrice * i.quantity)
+    );
+  };
+  
 }
 
 export class OrderItem{
