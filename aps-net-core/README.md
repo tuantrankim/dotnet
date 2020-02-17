@@ -1936,7 +1936,7 @@ import { Product } from "../shared/product";
 @Component({
   selector: "product-list",
   templateUrl: "productList.component.html",
-  styleUrl: []
+  styleUrl: [ "productList.component.css"]
 })
 
 export class ProductList implements OnInit {
@@ -1953,6 +1953,10 @@ export class ProductList implements OnInit {
                 }
               });
   }
+  
+  addProduct(product: Product){
+    this.data.AddToOrder(product);
+  }
 }
 
 ### Create new file productList.component.html
@@ -1961,14 +1965,14 @@ export class ProductList implements OnInit {
     <div class="card bg-light p-1 m-1">
   
       <img src="/img/{{p.artId }}.jpg"  class="img-fluid" [alt]="p.title"/>
-      <he>{{ p.category }} - {{p.size}}</h3>
+      <div class="product-name">{{ p.category }} - {{p.size}}</div>
       <ul class="product-props">
         <li><strong>Price</strong>: {p.price | currency:"USD":true }}</li>
         <li><strong>Artist</strong>: {{p.artist }}</li>
         <li><strong>Title</strong>: {{ p.title }}</li>
         <li><strong>Description</strong>: {{ p.artDescription }}</li>
       </ul>
-      <button id="buyButton" class="btn btn-success">Buy</button>
+      <button id="buyButton" class="btn btn-success btn-sm pull-right" (click)="addProduct(p)">Buy</button>
     </div>
   </div>
 </div>
@@ -2041,5 +2045,130 @@ export interface Product
   artistNationality: string;
 }
 
+### productList.component.css
 
+//img in class "product-info"
+.product-info img {
+  max-width: 100px;
+  float: left;
+  margin: 0 2px;
+  border: solid 1px black;
+}
+
+//class "product-name" in class "product-info"
+.product-info .product-name {
+  font-size: 
+}
+```
+## cart.component.ts
+```
+import { Component } from "@angular/core";
+import { DataService } from "../shared/dataService";
+
+@Component({
+  selector: "the-cart',
+  templateUrl: "cart.component.html",
+  styleUrls: ["cart.component.css"]
+})
+
+export class Cart {
+  constructor(private data: DataService){
+  
+  }
+}
+
+```
+### cart.component.html
+```
+<h3>Shopping cart</h3>
+<div>#/Items: {{ data.order.items.length}}</div>
+<table class="table table-condensed table-hover">
+  <thead>
+    <tr>
+      <td>Product</td>
+      <td>#</td>
+      <td>$</td>
+      <td>Total</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let o of data.order.items>
+      <td>{{ o.productCategory }} - {{ o.productTitle }}</td>
+      <td>{{ o.quantity }}</td>
+      <td>{{ o.unitPrice | currency:"USD":true }}</td>
+      <td>{{ (o.unitPrice * o.quantity) | currency:"USD":true }}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+```
+### Add cart to app.component.html
+```
+<div class="row">
+  <div class="col-md-9">
+    <h3>{{title}}</h3>
+    <product-list></product-list>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-light p-2">
+      <the-cart></the-cart>
+    </div>
+  </div>
+</div>
+```
+### Add cart to app.module.ts
+```
+...
+declarations:[
+...
+Cart
+]
+
+```
+
+### Sharing data across components
+```
+//order.ts
+export class Order {
+  orderId: number;
+  orderDate: Date = new Date();
+  orderNumber: string;
+  items: Array<OrderItem> = new Array<OrderItem>();
+}
+
+export class OrderItem{
+  id: number;
+  quantity: number;
+  unitPrice: number;
+  productId: number;
+  productCategory: string;
+  productSize: string;
+  productTitle: string;
+  productArtist: string;
+  ProductArtId: string;
+}
+
+//dataService.ts
+
+public order:Order = new Order();
+public AddToOrder(product: Product) {
+  let item: OrderItem = this.order.items.find(i => i.productId == product.id);
+  if(item) {
+    item.quantity++;
+  } else {
+  
+    item= new OrderItem();
+    item.productId = product.id;
+    item.productArtist = product.artist;
+    item.productCategory = product.category;
+    item.productArtId = product.artId;
+    item.productSize = product.size;
+    item.productTitle = product.title;
+    item.unitPrice = product.price;
+    item.quantity = 1;
+
+    this.order.items.push(item);
+  }
+}
 ```
