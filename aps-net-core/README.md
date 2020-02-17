@@ -1930,6 +1930,7 @@ public IActionResult Shop()
 ### Add new file shop/productList.component.ts
 
 import { Component } from "@angular/core";
+import { DataService } from "../shared/dataService";
 
 @Component({
   selector: "product-list",
@@ -1938,17 +1939,10 @@ import { Component } from "@angular/core";
 })
 
 export class ProductList{
-  public products = [{
-    title: "First Product",
-    price: 19.99
-  }, {
-   title: "Second Product",
-    price: 9.99
-  }, {
-   title: "Third Product",
-    price: 14.99
-  }  
-  ];
+  constructor(private data: DataService){
+    
+  }
+  public product[];
 }
 
 ### Create new file productList.component.html
@@ -1961,11 +1955,38 @@ export class ProductList{
 ### Add ProductList to app.module.ts
 ...
 import { ProductList } from "./shop/produtList.component";
+import { DataService } from "./shared/dataService";
 
 @NgModule({
   declarations:[
     ...
     ProductList
   ],
+  imports: [
+    ...
+  ],
+  providers: [
+    DataService
+  ],
+  bootstrap: [AppComponent]
 })
+
+### Create new file shared/dataService.ts
+
+export class DataService{
+
+  public products = [{
+    title: "First Product",
+    price: 19.99
+  }, {
+   title: "Second Product",
+    price: 9.99
+  }, {
+   title: "Third Product",
+    price: 14.99
+  }  
+  ];
+
+}
+
 ```
