@@ -2203,3 +2203,124 @@ let routes = [
   ]
 })
 ```
+## Deploy ASP.NET Core app
+```
+//package.json add gulp to minify javascript, css ..
+
+"devDependencies: {
+  ...
+  "gulp": "3.9.1",
+  "gulp-uglify": "~3.0.0",
+  "gulp-concat": "2.6.1"
+}
+
+// Add Hello/gulpfile.js (right click, add new item, ASP.NET Core > Web > Gulp Configuration File
+var gulp = require('gulp');
+var uglify = require("gulp-uglify");
+var concat = require("gulp-concat");
+
+gulp.task("minify", function() {
+  return gulp.src("wwwroot/js/**/*.js")
+          .pipe(uglify())
+          .pipe(concat("hello.min.js"))
+          .pipe(gulp.dest("wwwroot/dist"));
+});
+gulp.task('default', ["minify"]);
+
+// Open console cmd
+cmd>gulp
+OR run a specific task
+cmd>gulp minify
+
+
+```
+## Environment tag helpers
+```
+//_Layout.cshtml
+...
+<environment names="Development">
+  <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+  <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <link href="~/css/site.css" rel="stylesheet" />
+</environment>
+<environment names="Staging,Production">
+  <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+  <link href="~/css/site.css" rel="stylesheet" />
+</environment>
+...
+<environment names="Development">
+  <script src="~/lib/jquery.js"></script>
+  <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="~/lib/index.js"></script>
+</environment>
+
+<environment names="Staging,Production">
+  <script src="//ajax.aspnetcdn.com/ajax/jquery-3.2.1.min.js"
+          asp-fallback-src="~/lib/jquery.min.js"
+          asp-fallback-test="window.jQuery"></script>
+  <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
+          asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+          asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+  <script src="~/dist/hello.min.js" asp-append-version="true"></script>
+</environment>
+
+```
+
+## ASP.NET publish to folder
+```
+1- Set environment
+2- Setting up Deployment scripts
+//Hello.csproj end of the file
+...
+  <Target Name="MyPublishScripts" BeforeTargets="BeforePublish">
+    <Exec Command="npm install" />
+    <Exec Command="gulp" />
+    <Exec Command="ng build" />
+  </Target>
+</Project>
+
+3- Right click project -> publish to a directory
+4- Cannot use cmd>dotnet run. Instead using
+cmd>dotnet Hello.dll
+
+```
+
+## ASP.NET publish to Azure
+```
+1- Select publish target "Microsoft Azure App Service"
+2- Pick up subscription
+3- Click publish
+```
+
+## ASP.NET publish to IIS
+```
+IIS>Sites>Create new website>Select Application Pool "CORE"
+From visual studio (Admin)> Publish> Create new profile> IIS, FTP > fill out the form and publish
+
+```
+
+### Publish command
+```
+cmd> dotnet publish -o c:\users\shawn\desktop\pub2
+// Run the app
+cmd> dotnet Hello.dll
+```
+
+## Publish with runtime
+```
+//Hello.csproj
+<PropertyGroup>
+  ...
+  <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+  OR using multiple runtime identifier (win + apple)
+  <RuntimeIdentifiers>win10-x64,OSX.10.10-x64</RuntimeIdentifiers>
+</PropertyGroup>
+
+cmd> dotnet publish -o c:\users\shawn\desktop\pub2 --self-contained
+cmd> Hello.exe
+
+// for multiple runtime
+cmd> dotnet publish -o c:\users\shawn\desktop\pub2 --runtime osx.10.10-x64
+cmd> Hello.exe
+```
