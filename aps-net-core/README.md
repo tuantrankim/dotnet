@@ -2185,3 +2185,21 @@ public AddToOrder(product: Product) {
   }
 }
 ```
+## Routing with Angular
+```
+//app.module.ts
+let routes = [
+  {path: "", component: Shop},
+  {path: "checkout" component: Checkout }
+];
+
+@NgModule({
+  imports:[
+    ...
+    RouterModule.forRoot(routes, {
+      useHash: true, //single page
+      enableTracing: false, // for debugging of the Routes
+    })
+  ]
+})
+```
